@@ -1,117 +1,120 @@
 <template>
   <div class="event-detail-page">
-    <div class="luxury-bg-mesh">
+    <div class="party-bg-mesh">
       <div class="aura-blob aura-1"></div>
       <div class="aura-blob aura-2"></div>
       <div class="aura-blob aura-3"></div>
     </div>
 
-    <div class="container py-12">
+    <div class="container py-12 relative z-10">
       <button @click="$router.push('/home')" class="back-btn-corp mb-12">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-        Return to Portal
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Lineup
       </button>
 
       <div v-if="loading" class="loading-corp-full">
         <div class="pulse-loader"></div>
-        <span>Synchronizing Event Intelligence...</span>
+        <span class="tracking-widest font-900 uppercase text-sm mt-4">Syncing Gig Data...</span>
       </div>
       
-      <div v-else-if="error" class="error-panel-inline">{{ error }}</div>
+      <div v-else-if="error" class="error-panel-inline bg-[#ff007f]/10 border-[#ff007f]/20 text-[#ff007f]">{{ error }}</div>
       
-      <div v-else-if="event" class="card-premium detail-card-corp animate-corp">
+      <div v-else-if="event" class="card-premium detail-card-corp animate-corp relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-[var(--brand-glow)] opacity-10 blur-[100px] pointer-events-none"></div>
+        
         <div class="header-corp mb-12">
           <div class="header-main">
-            <span class="badge-corp">{{ event.sport_category }}</span>
-            <h1 class="hero-title-large mt-6">{{ event.title }}</h1>
+            <span class="badge-corp bg-[#ff007f]/10 text-[#ff007f] border-[#ff007f]/20">{{ event.sport_category }}</span>
+            <h1 class="hero-title-large mt-6 text-white font-900 uppercase tracking-tighter">{{ event.title }}</h1>
           </div>
-          <div class="tier-box-corp">
-             <span class="label-muted">Access Tier</span>
+          <div class="tier-box-corp text-right">
+             <span class="label-muted text-[10px] tracking-widest text-[#00f3ff]">ACCESS TIER</span>
              <span class="text-gradient font-900 text-3xl mt-2 block">{{ event.price_tier?.toUpperCase() }}</span>
           </div>
         </div>
 
         <div class="info-grid-corp mb-12">
           <div class="info-item">
-            <label class="label-muted mb-3">Venue Coordinates</label>
-            <p class="text-xl font-600">{{ event.venue_city }}{{ event.venue_address ? `, ${event.venue_address}` : '' }}</p>
+            <label class="label-muted mb-3 text-[10px] tracking-widest text-white/40 uppercase font-800">Show Location</label>
+            <p class="text-xl font-800 text-white">{{ event.venue_city }}{{ event.venue_address ? `, ${event.venue_address}` : '' }}</p>
           </div>
           <div class="info-item">
-            <label class="label-muted mb-3">Temporal Window</label>
-            <p class="text-xl font-600">{{ new Date(event.event_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) }}</p>
+            <label class="label-muted mb-3 text-[10px] tracking-widest text-white/40 uppercase font-800">Showtime</label>
+            <p class="text-xl font-800 text-white">{{ new Date(event.event_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) }}</p>
           </div>
         </div>
 
-        <div class="description-section mb-12">
-          <label class="label-muted mb-6">Briefing</label>
-          <p class="text-dim text-lg leading-relaxed max-w-4xl">{{ event.description || 'No strategic briefing provided.' }}</p>
+        <div class="description-section mb-12 bg-white/5 p-8 rounded-2xl border border-white/5">
+          <label class="label-muted mb-4 block text-[10px] tracking-widest text-[#ccff00] uppercase font-900">The Vibe</label>
+          <p class="text-white/70 text-lg leading-relaxed max-w-4xl font-500 italic">"{{ event.description || 'No vibe summary provided for this gig.' }}"</p>
         </div>
 
-        <div class="registration-panel-corp pt-12 border-top-luxury">
+        <div class="registration-panel-corp pt-12 border-t border-white/10">
           <div class="stats-grid-corp mb-12">
-            <div class="stat-box-corp">
-              <span class="label-muted mb-4 text-xs">Commitment Fee</span>
-              <span class="value text-4xl font-900">₹{{ event.price }}</span>
+            <div class="stat-box-corp p-6 bg-black/40 rounded-2xl border border-white/5">
+              <span class="label-muted mb-4 text-[10px] tracking-widest text-[#ff007f] block font-900">TICKET PRICE</span>
+              <span class="value text-5xl font-900 text-white">₹{{ event.price }}</span>
             </div>
-            <div class="stat-box-corp">
-              <span class="label-muted mb-4 text-xs">Sector Availability</span>
-              <span class="value text-4xl font-900">{{ event.seats_remaining }} / {{ event.capacity }}</span>
+            <div class="stat-box-corp p-6 bg-black/40 rounded-2xl border border-white/5">
+              <span class="label-muted mb-4 text-[10px] tracking-widest text-[#00f3ff] block font-900">TIX REMAINING</span>
+              <span class="value text-5xl font-900 text-white">{{ event.seats_remaining }}<span class="text-xl text-white/30 ml-2">/ {{ event.capacity }}</span></span>
             </div>
           </div>
 
           <div class="action-portal-corp">
             <template v-if="!authStore.isAuthenticated">
-              <div class="auth-prompt-corp text-center">
-                <p class="text-dim mb-8">Authentication required for mission commitment.</p>
-                <router-link to="/login" class="btn-corp btn-corp-primary px-12">Login to Access</router-link>
+              <div class="auth-prompt-corp text-center p-12 bg-black/60 rounded-3xl border border-[#ff007f]/20">
+                <p class="text-white/70 text-lg mb-8 font-600">You need to be on the guest list to book this show.</p>
+                <router-link to="/login" class="btn-corp bg-[#ff007f] text-black px-12 py-4 font-900 uppercase tracking-widest hover:bg-white transition-all shadow-[0_0_30px_rgba(255,0,127,0.3)]">Login to Access</router-link>
               </div>
             </template>
             <template v-else-if="authStore.isUser">
-              <div v-if="registrationStatus" class="status-panel-corp animate-corp">
+              <div v-if="registrationStatus" class="status-panel-corp animate-corp bg-[#00f3ff]/10 border-[#00f3ff]/30 p-8 rounded-3xl flex justify-between items-center">
                 <div class="status-info">
-                   <label class="label-muted mb-2">Registration Integrity</label>
-                   <p class="status-text">{{ registrationStatus.toUpperCase() }}</p>
+                   <label class="label-muted text-[10px] tracking-widest text-[#00f3ff] font-900">ENTRY STATUS</label>
+                   <p class="status-text text-3xl text-white font-900 mt-2">{{ registrationStatus.toUpperCase() }}</p>
                 </div>
-                <button v-if="registrationStatus === 'confirmed'" @click="cancelRegistration" class="btn-corp-link-danger">
-                  Abort Registration
+                <button v-if="registrationStatus === 'confirmed'" @click="cancelRegistration" class="btn-corp-link-danger text-[#ff007f] font-900 uppercase tracking-widest border border-[#ff007f]/30 px-6 py-3 rounded-xl hover:bg-[#ff007f] hover:text-black transition-all">
+                  Cancel Ticket
                 </button>
               </div>
+              
               <!-- UNIFIED REGISTRATION FORM -->
-              <div v-else-if="event.seats_remaining > 0" class="registration-form mt-4 mb-8 text-left">
-                <h4 class="mb-4 text-xl font-900 label-muted">Registration Details</h4>
-                <div class="input-stack mb-4">
-                  <label class="label-muted mb-2">Select Role</label>
-                  <select v-model="regForm.role" class="input-corp w-full">
-                    <option value="athlete">Athlete / Participant</option>
-                    <option value="sub_vendor">Sub-Vendor / Support Provider</option>
+              <div v-else-if="event.seats_remaining > 0" class="registration-form mt-4 mb-8 text-left bg-black/40 p-8 rounded-3xl border border-white/5">
+                <h4 class="mb-8 text-xl font-900 text-white uppercase tracking-tight">Booking Details</h4>
+                <div class="input-stack mb-6">
+                  <label class="label-muted text-[10px] tracking-widest text-[#00f3ff] mb-3 block font-900">SELECT YOUR ROLE</label>
+                  <select v-model="regForm.role" class="input-corp w-full bg-black/80 border-white/10 focus:border-[#00f3ff] py-4">
+                    <option value="athlete">Party Goer / Fan</option>
+                    <option value="sub_vendor">Gig Provider / DJ / Talent</option>
                   </select>
                 </div>
                 
-                <div v-if="regForm.role === 'athlete'" class="input-stack mb-4">
-                  <label class="label-muted mb-2">Team / Club Name (Optional)</label>
-                  <input type="text" v-model="regForm.role_details.team" class="input-corp w-full" placeholder="e.g. Thunderbolts" />
+                <div v-if="regForm.role === 'athlete'" class="input-stack mb-6">
+                  <label class="label-muted text-[10px] tracking-widest text-[#00f3ff] mb-3 block font-900">CREW / SQUAD NAME (OPTIONAL)</label>
+                  <input type="text" v-model="regForm.role_details.team" class="input-corp w-full bg-black/80 border-white/10 focus:border-[#00f3ff] py-4" placeholder="e.g. Neon Riders" />
                 </div>
                 
-                <div v-if="regForm.role === 'sub_vendor'" class="input-stack mb-4">
-                  <label class="label-muted mb-2">Service Type</label>
-                  <select v-model="regForm.role_details.service" class="input-corp w-full">
-                    <option value="catering">Food & Catering</option>
-                    <option value="medical">Medical Support</option>
-                    <option value="logistics">Equipment / Logistics</option>
+                <div v-if="regForm.role === 'sub_vendor'" class="input-stack mb-6">
+                  <label class="label-muted text-[10px] tracking-widest text-[#00f3ff] mb-3 block font-900">SERVICE TYPE</label>
+                  <select v-model="regForm.role_details.service" class="input-corp w-full bg-black/80 border-white/10 focus:border-[#00f3ff] py-4">
+                    <option value="catering">Drinks & Catering</option>
+                    <option value="medical">Health & Safety</option>
+                    <option value="logistics">Lighting / Audio Gear</option>
                   </select>
                 </div>
                 
                 <button 
                   @click="submitRegistrationForm" 
-                  class="btn-corp btn-corp-primary w-full py-6 text-lg mt-4"
+                  class="btn-corp bg-[#ff007f] text-black w-full py-6 text-xl mt-8 font-900 uppercase tracking-tighter hover:bg-white hover:shadow-[0_0_40px_rgba(255,0,127,0.4)] transition-all"
                   :disabled="bookingInProgress"
                 >
-                  {{ bookingInProgress ? 'Processing Metadata...' : 'Book Event Ticket' }}
+                  {{ bookingInProgress ? 'Processing Payment...' : 'Secure My Ticket' }}
                 </button>
               </div>
-              <div v-else class="sold-out-panel">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-                <span>Capacity Reached</span>
+              <div v-else class="sold-out-panel bg-white/5 border border-white/10 p-12 text-center rounded-3xl">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ff007f" stroke-width="2.5" class="mx-auto mb-6"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                <span class="text-2xl font-900 text-white uppercase tracking-widest">GATE CLOSED - SOLD OUT</span>
               </div>
             </template>
           </div>
@@ -119,7 +122,7 @@
       </div>
       
       <div v-if="event" class="similar-events-corp mt-20 animate-corp delay-200">
-        <h3 class="label-muted mb-10">Lateral Opportunities</h3>
+        <h3 class="label-muted text-[10px] tracking-widest text-[#ccff00] mb-10 font-900 uppercase">Lateral Gigs You'll Love</h3>
         <RecommendationRow 
           :eventId="event.id" 
           title="" 
@@ -284,7 +287,7 @@ onMounted(() => {
 
 <style scoped>
 .event-detail-page {
-  background-color: var(--bg-site);
+  padding: 80px 0 40px;
   min-height: 100vh;
   position: relative;
 }
@@ -292,108 +295,54 @@ onMounted(() => {
 .back-btn-corp {
   background: none;
   border: none;
-  color: var(--text-dim);
+  color: #00f3ff;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
-  transition: all 0.3s var(--ease-luxury);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  font-size: 0.75rem;
 }
 
 .back-btn-corp:hover {
   color: white;
-  transform: translateX(-8px);
+  transform: translateX(-10px);
 }
 
 .detail-card-corp {
-  padding: 2.5rem;
+  padding: 4rem;
+  background: rgba(10, 5, 20, 0.8);
+  border: 1px solid rgba(255, 0, 127, 0.2);
 }
 
 .hero-title-large {
-  font-size: 2.5rem;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
+  font-size: 3.5rem;
+  line-height: 0.95;
+  margin-bottom: 0.5rem;
 }
 
 .info-grid-corp {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
-.stats-grid-corp {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.border-top-luxury {
-  border-top: 1px solid var(--border-subtle);
+  gap: 3rem;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.05);
+  padding-bottom: 3rem;
 }
 
 .registration-panel-corp {
-  background: rgba(10, 10, 15, 0.4);
-  border-radius: var(--radius-lg);
-  padding: 3rem;
-  border: 1px solid var(--border-subtle);
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-  margin-top: 2rem;
+  margin-top: 3rem;
 }
 
-.status-panel-corp {
-  background: rgba(0, 240, 255, 0.05);
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  padding: 2.5rem;
-  border-radius: var(--radius-md);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+.stat-box-corp {
+  transition: all 0.3s ease;
 }
 
-.status-text {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--brand-primary);
-  margin-top: 0.5rem;
-  letter-spacing: 0.05em;
-}
-
-.btn-corp-link-danger {
-  color: #ff5555;
-  background: none;
-  border: none;
-  font-weight: 800;
-  cursor: pointer;
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: var(--transition-fast);
-}
-
-.btn-corp-link-danger:hover {
-  filter: brightness(1.2);
-  text-decoration: underline;
-}
-
-.sold-out-panel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  color: var(--text-dim);
-  font-weight: 900;
-  text-transform: uppercase;
-  padding: 2.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--radius-md);
-  font-size: 1.2rem;
-  letter-spacing: 0.2em;
+.stat-box-corp:hover {
+  border-color: rgba(204, 255, 0, 0.3);
+  transform: translateY(-2px);
 }
 
 .loading-corp-full {
@@ -401,19 +350,27 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  padding: 80px 0;
-  color: var(--text-dim);
+  padding: 100px 0;
+  color: #ccff00;
 }
 
-.text-xl { font-size: 1.1rem; }
-.text-3xl { font-size: 1.5rem; }
-.text-4xl { font-size: 1.75rem; }
-.font-600 { font-weight: 600; }
-.font-900 { font-weight: 900; }
+.pulse-loader {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #ccff00;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 20px #ccff00; }
+  100% { transform: scale(0.9); opacity: 0.5; }
+}
 
 @media (max-width: 1024px) {
-  .detail-card-corp { padding: 1.5rem; }
-  .hero-title-large { font-size: 2rem; }
-  .info-grid-corp, .stats-grid-corp { grid-template-columns: 1fr; gap: 1.5rem; }
+  .detail-card-corp { padding: 2rem; }
+  .hero-title-large { font-size: 2.5rem; }
+  .info-grid-corp, .stats-grid-corp { grid-template-columns: 1fr; gap: 2rem; }
 }
 </style>
