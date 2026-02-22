@@ -1,58 +1,65 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Premium Deep Black Palette */
+  /* Neon Club Deep Black Palette */
   --bg-site: #000000;
-  --bg-panel: rgba(15, 15, 20, 0.45);
-  --bg-panel-solid: #0a0a0c;
-  --bg-panel-light: #16161a;
-  --bg-secondary: #08080a;
+  --bg-panel: rgba(10, 5, 20, 0.45);
+  --bg-panel-solid: #0d0015;
+  --bg-panel-light: #1c0029;
+  --bg-secondary: #050010;
 
-  /* Luminous Cyber Accents */
-  --brand-primary: #00f0ff;
-  --brand-secondary: #ff0055;
-  --brand-accent: #7000ff;
+  /* Luminous Club Accents */
+  --brand-primary: #ff007f;
+  /* Electric Magenta */
+  --brand-secondary: #00f3ff;
+  /* Neon Cyan */
+  --brand-accent: #ccff00;
+  /* Acid Yellow */
 
-  --brand-gradient: linear-gradient(135deg, #00f0ff 0%, #7000ff 100%);
-  --brand-gradient-alt: linear-gradient(135deg, #ff0055 0%, #ff8800 100%);
-  --brand-glow: rgba(0, 240, 255, 0.5);
+  --brand-gradient: linear-gradient(135deg, #ff007f 0%, #00f3ff 100%);
+  --brand-gradient-alt: linear-gradient(135deg, #00f3ff 0%, #ccff00 100%);
+  --brand-glow: rgba(255, 0, 127, 0.6);
 
   --text-main: #ffffff;
-  --text-primary: #f8f9fa;
+  --text-primary: #f0f0f5;
   --text-dim: rgba(255, 255, 255, 0.75);
   --text-muted: rgba(255, 255, 255, 0.45);
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-premium: rgba(255, 255, 255, 0.15);
-  --border-bold: rgba(255, 255, 255, 0.25);
+  --border-subtle: rgba(255, 0, 127, 0.15);
+  --border-premium: rgba(0, 243, 255, 0.25);
+  --border-bold: rgba(204, 255, 0, 0.4);
 
-  /* Next-Gen Glassmorphism */
-  --glass-bg: rgba(10, 10, 15, 0.35);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --blur-md: blur(24px) saturate(150%);
-  --blur-lg: blur(60px) saturate(200%);
+  /* Vaporwave Glassmorphism */
+  --glass-bg: rgba(15, 0, 25, 0.4);
+  --glass-border: rgba(255, 0, 127, 0.2);
+  --blur-md: blur(16px) saturate(180%);
+  --blur-lg: blur(40px) saturate(220%);
 
-  /* Layered Shadows */
+  /* Neon Glowing Shadows */
   --shadow-luxury:
-    0 10px 40px -10px rgba(0, 0, 0, 0.8),
-    0 1px 1px rgba(255, 255, 255, 0.05) inset;
-  --shadow-glow: 0 0 50px rgba(0, 240, 255, 0.2);
+    0 10px 40px -10px rgba(0, 0, 0, 0.9),
+    0 1px 1px rgba(255, 255, 255, 0.1) inset,
+    0 0 15px rgba(255, 0, 127, 0.15);
+  /* Base Magenta Glow */
+  --shadow-glow: 0 0 50px rgba(0, 243, 255, 0.4);
+  /* Cyan hover pop */
 
   /* Proportions */
   --max-width: 1200px;
-  --nav-height: 72px;
-  --radius-xs: 6px;
-  --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 32px;
+  --nav-height: 80px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
   --radius-pill: 1000px;
 
-  /* Fluid Motion */
-  --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Energetic Motion */
+  --ease-luxury: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Bouncier, club-like pop */
   --transition-ultra: 1.2s var(--ease-luxury);
   --transition-slow: 0.8s var(--ease-luxury);
   --transition-md: 0.4s var(--ease-luxury);
-  --transition-fast: 0.25s var(--ease-luxury);
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -95,9 +102,10 @@ h1,
 h2,
 h3,
 h4 {
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  line-height: 1.05;
 }
 
 .text-gradient {
@@ -106,6 +114,7 @@ h4 {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
+  padding-bottom: 0.1em;
 }
 
 /* ── Layout ── */
@@ -279,7 +288,7 @@ h4 {
 }
 
 /* ── Background Mesh ── */
-.luxury-bg-mesh {
+.party-bg-mesh {
   position: fixed;
   top: 0;
   left: 0;
@@ -293,50 +302,68 @@ h4 {
 .aura-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.1;
+  filter: blur(80px);
+  /* Sharper blur for more intense light */
+  opacity: 0.15;
   pointer-events: none;
-  animation: auraFloat 25s infinite alternate var(--ease-luxury);
+  animation: strobeFloat 12s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+  mix-blend-mode: screen;
 }
 
 .aura-1 {
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
   background: var(--brand-primary);
-  top: -15%;
-  left: -10%;
+  /* Magenta */
+  top: -20%;
+  left: -15%;
 }
 
 .aura-2 {
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   background: var(--brand-secondary);
+  /* Cyan */
   bottom: -15%;
   right: -10%;
-  animation-delay: -5s;
+  animation-delay: -3s;
 }
 
 .aura-3 {
-  width: 300px;
-  height: 300px;
+  width: 400px;
+  height: 400px;
   background: var(--brand-accent);
-  top: 40%;
-  left: 50%;
-  opacity: 0.06;
-  animation-delay: -10s;
+  /* Yellow */
+  top: 30%;
+  left: 40%;
+  opacity: 0.1;
+  animation-delay: -7s;
 }
 
-@keyframes auraFloat {
+@keyframes strobeFloat {
   0% {
     transform: translate(0, 0) scale(1);
+    opacity: 0.1;
+  }
+
+  25% {
+    transform: translate(80px, -40px) scale(1.1);
+    opacity: 0.25;
   }
 
   50% {
-    transform: translate(60px, 30px) scale(1.05);
+    transform: translate(40px, 80px) scale(0.9);
+    opacity: 0.15;
+  }
+
+  75% {
+    transform: translate(-60px, -20px) scale(1.2);
+    opacity: 0.3;
   }
 
   100% {
     transform: translate(-30px, 60px) scale(0.95);
+    opacity: 0.1;
   }
 }
 

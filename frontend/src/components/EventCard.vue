@@ -66,6 +66,15 @@ const getPriceTier = (tier: string) => {
   flex-direction: column;
   justify-content: space-between;
   min-height: 280px;
+  background: rgba(10, 5, 20, 0.6); /* Deeper club-like background */
+  border: 1px solid rgba(255, 0, 127, 0.15); /* Magenta border subtle */
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.event-corp-card:hover {
+  border-color: rgba(0, 243, 255, 0.4); /* Cyan on hover */
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0, 243, 255, 0.15), inset 0 0 20px rgba(255, 0, 127, 0.1);
 }
 
 .card-glow {
@@ -74,11 +83,12 @@ const getPriceTier = (tier: string) => {
   left: 0;
   width: 100%;
   padding-top: 100%;
-  background: radial-gradient(circle at center, var(--brand-glow), transparent 70%);
+  background: radial-gradient(circle at center, rgba(255,0,127,0.4), transparent 70%); /* Magenta glow */
   opacity: 0;
-  transition: opacity 0.5s var(--ease);
+  transition: opacity 0.5s ease;
   pointer-events: none;
   transform: translateY(-50%) translateX(20%);
+  mix-blend-mode: screen;
 }
 
 .event-corp-card:hover .card-glow {
@@ -90,6 +100,8 @@ const getPriceTier = (tier: string) => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  border-bottom: 1px dashed rgba(255,255,255,0.1); /* Perforated ticket look */
+  padding-bottom: 1rem;
 }
 
 .category-pill-corp {
@@ -97,12 +109,13 @@ const getPriceTier = (tier: string) => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.8rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 0, 127, 0.1);
+  border: 1px solid rgba(255, 0, 127, 0.2);
   border-radius: var(--radius-sm);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 900;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: #ff007f; /* Electric Magenta */
 }
 
 .tier-indicator {
@@ -118,15 +131,16 @@ const getPriceTier = (tier: string) => {
 }
 
 .tier-indicator span.active {
-  background: var(--brand-primary);
-  box-shadow: 0 0 8px var(--brand-primary);
+  background: #00f3ff; /* Neon Cyan */
+  box-shadow: 0 0 8px #00f3ff;
 }
 
 .event-title-corp {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   margin-bottom: 1rem;
   color: white;
-  font-weight: 800;
+  font-weight: 900;
+  text-transform: uppercase;
   letter-spacing: -0.02em;
 }
 
@@ -140,9 +154,9 @@ const getPriceTier = (tier: string) => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: var(--text-dim);
+  color: rgba(255,255,255,0.7);
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .event-footer-corp {
@@ -150,8 +164,8 @@ const getPriceTier = (tier: string) => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 1.5rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1); /* Perforated ticket look */
 }
 
 .price-box-corp {
@@ -162,8 +176,8 @@ const getPriceTier = (tier: string) => {
 .label-corp {
   font-size: 0.7rem;
   text-transform: uppercase;
-  color: var(--brand-primary);
-  font-weight: 800;
+  color: #ccff00; /* Acid Yellow */
+  font-weight: 900;
   letter-spacing: 0.1em;
   margin-bottom: 0.2rem;
 }
@@ -176,23 +190,25 @@ const getPriceTier = (tier: string) => {
 }
 
 .btn-corp-link {
-  color: var(--brand-primary);
+  color: black;
   text-decoration: none;
-  font-weight: 800;
+  font-weight: 900;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   transition: all 0.3s;
-  background: rgba(0, 240, 255, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-pill);
+  background: #00f3ff; /* Neon Cyan */
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px; /* More angular, ticket-like */
 }
 
 .btn-corp-link:hover {
-  background: var(--brand-primary);
+  background: white;
   color: black;
   gap: 0.75rem;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+  transform: translateY(-2px);
 }
 </style>

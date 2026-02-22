@@ -144,7 +144,7 @@ const fetchData = async () => {
     const config = { headers: { Authorization: `Bearer ${authStore.token}` } };
     
     const [statsRes, trendRes, cityRes, fillRes, orgRes] = await Promise.all([
-      axios.get('http://localhost:8000/api/admin/analytics', config),
+      axios.get('http://localhost:8000/api/admin/dashboard', config),
       axios.get('http://localhost:8000/api/admin/monthly-trend', config),
       axios.get('http://localhost:8000/api/admin/city-distribution', config),
       axios.get('http://localhost:8000/api/admin/fill-rate', config),

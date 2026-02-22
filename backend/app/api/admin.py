@@ -21,6 +21,9 @@ class AdminDashboard(Resource):
         total_events = Event.query.count()
         total_reg = Registration.query.filter_by(status='confirmed').count()
         
+        revenue_row = db.session.query(func.sum(Event.price)).join(Registration, Registration.event_id == Event.id).filter(Registration.status == 'confirmed').first()
+        total_revenue = float(revenue_row[0] or 0)
+        
         sport_row = db.session.query(
             Event.sport_category,
             func.count(Registration.id).label('cnt')
@@ -41,6 +44,7 @@ class AdminDashboard(Resource):
             'total_users': total_users,
             'total_events': total_events,
             'total_registrations': total_reg,
+            'total_revenue': total_revenue,
             'most_popular_sport': popular_sport,
             'city_distribution': city_distribution
         }, 200

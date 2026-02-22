@@ -1,46 +1,50 @@
 <template>
   <div class="home-page animate-corp">
-    <header class="hero-v3">
-      <div class="container text-center animate-corp">
-        <span class="badge-corp">Discover &amp; Register</span>
-        <h1 class="hero-main-title delay-100">
-          Find Your Next <span class="text-gradient">Sports Event.</span>
+    <header class="hero-v3 relative overflow-hidden">
+      <!-- Added a localized glowing stage light effect -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-4xl bg-[radial-gradient(ellipse_at_top,_var(--brand-glow),_transparent_70%)] opacity-30 mix-blend-screen pointer-events-none"></div>
+
+      <div class="container text-center animate-corp relative z-10">
+        <span class="badge-corp backdrop-blur-md bg-black/40 border-[var(--brand-primary)]/30 text-[var(--brand-primary)]">Live Gig Platform</span>
+        <h1 class="hero-main-title delay-100 text-5xl md:text-7xl font-900 tracking-tighter mt-6">
+          Find Your Next <span class="text-gradient">Live Show.</span>
         </h1>
-        <p class="hero-description delay-200">
-          Browse upcoming tournaments, register instantly, and track your participation — all in one place.
+        <p class="hero-description delay-200 text-lg text-white/70 max-w-2xl mx-auto mt-6">
+          Browse upcoming gigs, secure tickets instantly, and hype your favorite artists — all in one place.
         </p>
 
         <div v-if="authStore.isAuthenticated && authStore.isUser" class="hero-personalized-track mt-8 animate-corp delay-300">
-           <RecommendationRow title="Recommended for You" :limit="4" />
+           <RecommendationRow title="Curated For You" :limit="4" />
         </div>
       </div>
     </header>
 
-    <section class="section-spacer">
-      <div class="container">
-        <div class="section-header-flex mb-12 animate-corp p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
-          <div class="header-text">
-            <h2 class="section-title-large text-brand-primary">Browse Events</h2>
-            <p class="section-subtitle opacity-75">Find and join the latest sports events near you.</p>
+    <section class="section-spacer relative">
+      <div class="container relative z-10">
+        <div class="section-header-flex mb-12 animate-corp p-6 lg:p-8 rounded-3xl bg-black/40 border border-white/5 backdrop-blur-xl shadow-luxury relative overflow-hidden group">
+          <div class="absolute inset-0 bg-gradient-to-r from-brand-secondary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+          <div class="header-text relative z-10">
+            <h2 class="section-title-large text-white font-900 tracking-tight">The Lineup</h2>
+            <p class="section-subtitle text-white/50 mt-2 font-500">Find and join the latest massive shows near you.</p>
           </div>
-          <div class="flex gap-4 w-full md:w-auto mt-4 md:mt-0">
-            <div class="search-luxury-wrapper w-full md:w-64">
-              <label class="label-muted mb-2 text-[10px] tracking-widest text-white/50">Architectural Search</label>
+          <div class="header-controls flex flex-col sm:flex-row gap-4 w-full lg:w-auto mt-6 lg:mt-0 relative z-10">
+            <div class="search-luxury-wrapper flex-grow lg:flex-grow-0 lg:w-72">
+               <label class="label-muted text-[10px] tracking-widest text-[#00f3ff] mb-2 block w-full">Vibe Search</label>
               <input 
                 type="text" 
                 v-model="searchQuery" 
-                placeholder="Search events..."
-                class="input-corp bg-black/40 border-white/10 focus:border-brand-primary focus:shadow-[0_0_15px_rgba(0,240,255,0.2)]"
+                placeholder="Search gigs, artists..."
+                 class="input-corp w-full bg-black/60 border-white/10 focus:border-[#00f3ff] focus:shadow-[0_0_15px_rgba(0,243,255,0.2)] transition-all"
               />
             </div>
 
-            <div class="filter-luxury-wrapper w-full md:w-48">
-              <label class="label-muted mb-2 text-[10px] tracking-widest text-white/50">Budget Bracket</label>
-              <select v-model="budgetFilter" class="input-corp bg-black/40 border-white/10 focus:border-brand-primary">
-                <option value="all">All Brackets</option>
-                <option value="cheap">Standard (< ₹500)</option>
-                <option value="mid">Mid-Tier (₹500 - ₹2000)</option>
-                <option value="premium">Elite Suite (> ₹2000)</option>
+            <div class="filter-luxury-wrapper flex-grow lg:flex-grow-0 lg:w-56">
+               <label class="label-muted text-[10px] tracking-widest text-[#00f3ff] mb-2 block w-full">Ticket Bracket</label>
+               <select v-model="budgetFilter" class="input-corp w-full bg-black/60 border-white/10 focus:border-[#00f3ff] transition-all">
+                <option value="all">All Tiers</option>
+                <option value="cheap">General Admission (< ₹500)</option>
+                <option value="mid">VIP Access (₹500 - ₹2000)</option>
+                <option value="premium">Backstage Pass (> ₹2000)</option>
               </select>
             </div>
           </div>

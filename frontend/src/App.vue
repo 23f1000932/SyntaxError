@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="luxury-bg-mesh">
+    <div class="party-bg-mesh">
       <div class="aura-blob aura-1"></div>
       <div class="aura-blob aura-2"></div>
       <div class="aura-blob aura-3"></div>
@@ -8,8 +8,8 @@
     <nav class="navbar-premium glass-container" :class="{ 'scrolled': isScrolled }">
       <div class="container navbar-inner">
         <router-link to="/" class="navbar-logo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-primary)"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-          <span>SYNTAX<span class="text-gradient">ERROR</span></span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-primary)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          <span class="tracking-widest">LIVE<span class="text-gradient">SHOWS</span></span>
         </router-link>
         
         <div class="navbar-links">
