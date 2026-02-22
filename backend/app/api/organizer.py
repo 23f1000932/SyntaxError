@@ -3,6 +3,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.extensions import db
 from app.models.event import Event
 from app.models.registration import Registration
+from app.models.user import User
+from app.services.algolia_sync import AlgoliaSyncService
 from app.utils.decorators import role_required
 from sqlalchemy import func
 
@@ -26,7 +28,8 @@ class OrganizerDashboard(Resource):
             'seats_remaining': e.seats_remaining,
             'revenue': e.revenue,
             'fill_rate': e.fill_rate,
-            'performance_label': e.performance_label
+            'performance_label': e.performance_label,
+            'is_featured': e.is_featured
         } for e in events], 200
 
 @organizer_ns.route('/trend/<int:event_id>')
@@ -82,3 +85,25 @@ class CategoryInsight(Resource):
          .group_by(Event.sport_category).all()
 
         return [{'category': r.sport_category, 'registrations': r.registrations} for r in rows], 200
+
+@organizer_ns.route('/events/<int:event_id>/feature')
+class FeatureEvent(Resource):
+    @jwt_required()
+    @role_required('founder', 'admin', 'organizer')
+    def post(self, event_id):
+        """Toggle is_featured for an event (US-09)"""
+        uid = get_jwt_identity()
+        user = User.query.get(uid)
+        
+        event = Event.query.get(event_id)
+        if not event:
+            return {'message': 'Event not found'}, 404
+            
+        if user.role not in ['founder', 'admin'] and event.organizer_id != uid:
+            return {'message': 'Forbidden'}, 403
+            
+        event.is_featured = not event.is_featured
+        db.session.commit()
+        AlgoliaSyncService().index_event(event)
+        
+        return {'message': 'Event feature status toggled', 'is_featured': event.is_featured}, 200

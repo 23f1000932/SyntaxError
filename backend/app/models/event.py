@@ -17,6 +17,7 @@ class Event(db.Model):
     tags = db.Column(db.JSON, nullable=True)
     banner_url = db.Column(db.String(300), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
+    is_featured = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     registrations = db.relationship('Registration', back_populates='event', lazy=True)
@@ -77,6 +78,7 @@ class Event(db.Model):
             'tags': self.tags or [],
             'banner_url': self.banner_url,
             'is_active': self.is_active,
+            'is_featured': self.is_featured,
             'seats_sold': self.seats_sold,
             'seats_remaining': self.seats_remaining,
             'fill_rate': self.fill_rate,

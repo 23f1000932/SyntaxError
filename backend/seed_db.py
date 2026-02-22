@@ -19,19 +19,19 @@ def seed_database():
 
         print("Seeding Users...")
         admin = User(name='Admin Boss', email='admin@example.com', role='admin', city='Mumbai')
-        admin.set_password('password')
+        admin.set_password('123456')
         
         org1 = User(name='Sports Authority', email='org1@example.com', role='organizer', city='Delhi')
-        org1.set_password('password')
+        org1.set_password('123456')
 
         org2 = User(name='Active Life Org', email='org2@example.com', role='organizer', city='Bangalore')
-        org2.set_password('password')
+        org2.set_password('123456')
 
         user1 = User(name='Rahul Sharma', email='user1@example.com', role='user', city='Delhi', budget_preference='mid', preferred_sports=['Football', 'Cricket'])
-        user1.set_password('password')
+        user1.set_password('123456')
 
         user2 = User(name='Priya Patel', email='user2@example.com', role='user', city='Mumbai', budget_preference='cheap', preferred_sports=['Running', 'Cycling'])
-        user2.set_password('password')
+        user2.set_password('123456')
 
         db.session.add_all([admin, org1, org2, user1, user2])
         db.session.commit()

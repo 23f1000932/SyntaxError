@@ -1,81 +1,166 @@
 <template>
   <div class="organizer-dashboard">
-    <div class="header-section">
-      <h1>Organizer Dashboard</h1>
-      <button @click="$router.push('/organizer/create')" class="btn btn-primary">+ Create New Event</button>
-    </div>
+    <div class="container py-12">
+      <div class="dashboard-header-corp mb-12 animate-corp">
+        <div class="header-text">
+          <span class="badge-corp">Management Console</span>
+          <h1 class="hero-title-small mt-4">Architect Dashboard</h1>
+          <p class="text-dim mt-2">Precision monitoring of your event portfolio and revenue stream.</p>
+        </div>
+        <router-link to="/organizer/create" class="btn-corp btn-corp-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Deploy New Event
+        </router-link>
+      </div>
 
-    <div v-if="loading" class="loading-state">Loading dashboard...</div>
-    <div v-else-if="error" class="error-message">{{ error }}</div>
-    
-    <div v-else class="dashboard-content">
-        <!-- Feature 11: Ticket Sales Summary Table -->
-        <section class="dashboard-section">
-            <h2>Your Events Overview</h2>
-            <div class="table-container">
-                <table class="data-table">
-                <thead>
-                    <tr>
-                    <th>Event Title</th>
-                    <th>Date</th>
-                    <th>City</th>
-                    <th>Registrations</th>
-                    <th>Remaining</th>
-                    <th>Revenue (₹)</th>
-                    <th>Performance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="event in events" :key="event.event_id">
-                    <td>{{ event.title }}</td>
-                    <td>{{ new Date(event.event_date).toLocaleDateString() }}</td>
-                    <td>{{ event.venue_city }}</td>
-                    <td>{{ event.registrations }}</td>
-                    <td>{{ event.seats_remaining }}</td>
-                    <td>₹{{ event.revenue }}</td>
-                    <td><span class="badge" :class="event.performance_label.toLowerCase()">{{ event.performance_label }}</span></td>
-                    </tr>
-                    <tr v-if="events.length === 0">
-                    <td colspan="7" class="text-center">No active events found. Create one!</td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
+      <div v-if="loading" class="loading-corp-full">
+        <div class="pulse-loader"></div>
+        <span>fetching Dashboard intelligence...</span>
+      </div>
+      
+      <div v-else-if="error" class="error-panel-inline mb-12">{{ error }}</div>
+      
+      <div v-else class="dashboard-grid">
+        <!-- FEATURE: FOUNDER ADMIN KPIs -->
+        <section v-if="authStore.isFounder" class="kpi-grid-corp span-2 mb-8 animate-corp border border-brand-primary/20 rounded-xl bg-brand-primary/5 p-4">
+          <h2 class="label-muted mb-4 text-brand-primary w-full col-span-4">Platform Overview (Founder Rights)</h2>
+          <div class="card-premium kpi-card-corp bg-black/40">
+            <span class="label-muted mb-4 opacity-70">Platform Users</span>
+            <span class="kpi-val-corp text-white">{{ adminOverview.total_users }}</span>
+          </div>
+          <div class="card-premium kpi-card-corp bg-black/40">
+            <span class="label-muted mb-4 opacity-70">Platform Events</span>
+            <span class="kpi-val-corp text-white">{{ adminOverview.total_events }}</span>
+          </div>
+          <div class="card-premium kpi-card-corp bg-black/40">
+            <span class="label-muted mb-4 opacity-70">Platform Regs</span>
+            <span class="kpi-val-corp text-white">{{ adminOverview.total_registrations }}</span>
+          </div>
+          <div class="card-premium kpi-card-corp bg-black/40">
+            <span class="label-muted mb-4 opacity-70">Top Sport</span>
+            <span class="kpi-val-corp text-white text-xl">{{ adminOverview.most_popular_sport || 'N/A' }}</span>
+          </div>
         </section>
 
-        <!-- Feature 10 & 12: Charts -->
-        <div class="charts-grid" v-if="events.length > 0">
-            <!-- Registration Trend Chart -->
-            <section class="dashboard-section chart-card">
-                <h2>Registration Trend</h2>
-                <div class="event-selector">
-                    <label>Select Event: </label>
-                    <select v-model="selectedEventId" @change="fetchTrendData">
-                        <option v-for="event in events" :key="event.event_id" :value="event.event_id">
-                            {{ event.title }}
-                        </option>
-                    </select>
-                </div>
-                <div v-if="loadingTrend" class="text-center mt-2">Loading chart...</div>
-                <RegistrationTrend v-else :data="trendData" />
-            </section>
+        <!-- Feature 11: Ticket Sales Summary KPI -->
+        <section class="kpi-grid-corp span-2 mb-12 animate-corp delay-50">
+          <div class="card-premium kpi-card-corp">
+            <span class="label-muted mb-4">Total Capacity Units</span>
+            <span class="kpi-val-corp text-gradient">{{ totalCapacity }}</span>
+          </div>
+          <div class="card-premium kpi-card-corp">
+            <span class="label-muted mb-4">Commitments Secured</span>
+            <span class="kpi-val-corp text-gradient">{{ totalRegistrations }}</span>
+          </div>
+          <div class="card-premium kpi-card-corp">
+            <span class="label-muted mb-4">Aggregate Fill Rate</span>
+            <span class="kpi-val-corp text-gradient">{{ aggregateFillRate }}%</span>
+          </div>
+          <div class="card-premium kpi-card-corp">
+            <span class="label-muted mb-4">Grand Yield</span>
+            <span class="kpi-val-corp text-gradient">₹{{ totalRevenue.toLocaleString() }}</span>
+          </div>
+        </section>
 
-            <!-- Sport Category Insights Chart -->
-            <section class="dashboard-section chart-card">
-                <h2>Registrations by Sport</h2>
-                <CategoryBarChart :data="categoryData" />
-            </section>
+        <!-- Overview Table -->
+        <section class="card-premium span-2 animate-corp delay-100">
+          <div class="section-header-corp mb-8">
+            <h2 class="label-muted">Active Event Parameters</h2>
+          </div>
+          <div class="table-wrapper-corp">
+            <table class="table-corp">
+              <thead>
+                <tr>
+                  <th>Event Designation</th>
+                  <th>Timeline</th>
+                  <th>Bio-Region</th>
+                  <th>Units</th>
+                  <th>Cap</th>
+                  <th>Yield (₹)</th>
+                  <th>Efficiency</th>
+                  <th v-if="authStore.isFounder">Visibility</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="event in events" :key="event.event_id">
+                  <td class="font-800">{{ event.title }}</td>
+                  <td>{{ new Date(event.event_date).toLocaleDateString('en-GB') }}</td>
+                  <td>{{ event.venue_city }}</td>
+                  <td>{{ event.registrations }}</td>
+                  <td>{{ event.capacity }}</td>
+                  <td class="text-gradient font-800">{{ event.revenue }}</td>
+                  <td>
+                    <span class="badge-corp-small" :class="event.performance_label.toLowerCase()">
+                      {{ event.performance_label }}
+                    </span>
+                  </td>
+                  <td v-if="authStore.isFounder">
+                    <button 
+                      @click="toggleFeatureEvent(event)" 
+                      class="badge-corp-small !cursor-pointer transition-all hover:brightness-125"
+                      :class="event.is_featured ? 'high' : 'medium'"
+                    >
+                      {{ event.is_featured ? 'Featured' : 'Standard' }}
+                    </button>
+                  </td>
+                </tr>
+                <tr v-if="events.length === 0">
+                  <td colspan="8" class="text-center py-10 text-muted">No active registrations found.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Charts Segment -->
+        <div class="charts-column span-2 grid-inner" v-if="events.length > 0">
+          <section class="card-premium animate-corp delay-200">
+            <h2 class="label-muted mb-8">Registration Pulse</h2>
+            <div class="selector-corp mb-8">
+              <label class="label-muted mb-4">Target Designation</label>
+              <select v-model="selectedEventId" @change="fetchTrendData" class="input-corp">
+                <option v-for="event in events" :key="event.event_id" :value="event.event_id">
+                  {{ event.title }}
+                </option>
+              </select>
+            </div>
+            <div v-if="loadingTrend" class="text-center py-8">
+               <div class="pulse-loader small mx-auto"></div>
+            </div>
+            <RegistrationTrend v-else :data="trendData" />
+          </section>
+
+          <section class="card-premium animate-corp delay-300">
+            <h2 class="label-muted mb-8">Market Segmentation</h2>
+            <CategoryBarChart :data="categoryData" />
+          </section>
         </div>
+
+        <!-- Charts Row 2: Revenue & Capacity -->
+        <div class="charts-column span-2 grid-inner" v-if="events.length > 0">
+          <section class="card-premium animate-corp delay-400">
+            <h2 class="label-muted mb-8">Revenue per Event</h2>
+            <RevenuePerEventChart :data="events" />
+          </section>
+
+          <section class="card-premium animate-corp delay-400">
+            <h2 class="label-muted mb-8">Capacity Utilization</h2>
+            <CapacityChart :data="events" />
+          </section>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '../stores/auth';
 import RegistrationTrend from '../components/charts/RegistrationTrend.vue';
 import CategoryBarChart from '../components/charts/CategoryBarChart.vue';
+import RevenuePerEventChart from '../components/charts/RevenuePerEventChart.vue';
+import CapacityChart from '../components/charts/CapacityChart.vue';
 
 const authStore = useAuthStore();
 const loading = ref(true);
@@ -87,20 +172,44 @@ const categoryData = ref<any[]>([]);
 const trendData = ref<any[]>([]);
 const selectedEventId = ref<number | null>(null);
 
+const adminOverview = ref<any>({});
+
+const totalCapacity = computed(() => events.value.reduce((acc, e) => acc + e.capacity, 0));
+const totalRegistrations = computed(() => events.value.reduce((acc, e) => acc + e.registrations, 0));
+const totalRevenue = computed(() => events.value.reduce((acc, e) => acc + e.revenue, 0));
+const aggregateFillRate = computed(() => {
+    if (totalCapacity.value === 0) return 0;
+    return round((totalRegistrations.value / totalCapacity.value) * 100, 1);
+});
+
+function round(val: number, precision: number) {
+    const multiplier = Math.pow(10, precision || 0);
+    return Math.round(val * multiplier) / multiplier;
+}
+
 const fetchDashboardData = async () => {
     loading.value = true;
     error.value = '';
     try {
         const config = { headers: { Authorization: `Bearer ${authStore.token}` } };
         
-        // Parallel fetch for Dashboard KPIs and Category Insights
-        const [dashRes, catRes] = await Promise.all([
+        const promises = [
             axios.get('http://localhost:8000/api/organizer/dashboard', config),
             axios.get('http://localhost:8000/api/organizer/category-insight', config)
-        ]);
+        ];
 
-        events.value = dashRes.data;
-        categoryData.value = catRes.data;
+        if (authStore.isFounder || authStore.isAdmin) {
+             promises.push(axios.get('http://localhost:8000/api/admin/dashboard', config));
+        }
+
+        const resArray = await Promise.all(promises);
+
+        events.value = resArray[0].data;
+        categoryData.value = resArray[1].data;
+        
+        if (authStore.isFounder || authStore.isAdmin) {
+            adminOverview.value = resArray[2].data;
+        }
 
         if (events.value.length > 0) {
             selectedEventId.value = events.value[0].event_id;
@@ -108,9 +217,19 @@ const fetchDashboardData = async () => {
         }
 
     } catch (err: any) {
-        error.value = 'Failed to load dashboard data. ' + (err.response?.data?.message || '');
+        error.value = 'Failed to synchronize dashboard telemetry.';
     } finally {
         loading.value = false;
+    }
+};
+
+const toggleFeatureEvent = async (event: any) => {
+    try {
+        const config = { headers: { Authorization: `Bearer ${authStore.token}` } };
+        const res = await axios.post(`http://localhost:8000/api/organizer/events/${event.event_id}/feature`, {}, config);
+        event.is_featured = res.data.is_featured;
+    } catch (e) {
+        alert('Failed to toggle feature status');
     }
 };
 
@@ -122,7 +241,7 @@ const fetchTrendData = async () => {
         const res = await axios.get(`http://localhost:8000/api/organizer/trend/${selectedEventId.value}`, config);
         trendData.value = res.data;
     } catch (err) {
-        console.error("Failed to load trend", err);
+        console.error("Trend synchronization failed", err);
     } finally {
         loadingTrend.value = false;
     }
@@ -135,98 +254,108 @@ onMounted(() => {
 
 <style scoped>
 .organizer-dashboard {
-  padding: 2rem 0;
+  background-color: var(--bg-site);
+  min-height: 100vh;
 }
 
-.header-section {
+.dashboard-header-corp {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  align-items: flex-end;
 }
 
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
-.btn-primary {
-  background-color: #00bcd4;
-  color: white;
+.grid-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
 }
 
-.dashboard-section {
-  background: white;
+.span-2 { grid-column: span 2; }
+
+.kpi-grid-corp {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.kpi-card-corp {
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
 }
 
-.dashboard-section h2 {
-    margin-bottom: 1rem;
-    font-size: 1.25rem;
-    color: #333;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 0.5rem;
+.kpi-val-corp {
+  font-size: 1.75rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
-.table-container {
+.font-800 { font-weight: 800; }
+
+.table-wrapper-corp {
   overflow-x: auto;
 }
 
-.data-table {
+.table-corp {
   width: 100%;
-  border-collapse: collapse;
 }
 
-.data-table th, .data-table td {
-  padding: 1rem;
+.table-corp th {
   text-align: left;
-  border-bottom: 1px solid #eee;
+  padding: 0.75rem 1rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.data-table th {
-  background-color: #f8f9fa;
-  font-weight: 600;
-  color: #555;
+.badge-corp-small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-.badge.high { background: #d4edda; color: #155724; }
-.badge.medium { background: #fff3cd; color: #856404; }
-.badge.low { background: #f8d7da; color: #721c24; }
+.badge-corp-small.high { background: rgba(0, 223, 216, 0.1); color: var(--brand-secondary); }
+.badge-corp-small.medium { background: rgba(255, 171, 0, 0.1); color: #ffab00; }
+.badge-corp-small.low { background: rgba(255, 85, 85, 0.1); color: #ff5555; }
 
-.charts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.loading-corp-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 60px 0;
+  color: var(--text-dim);
+}
+
+.pulse-loader.small {
+  width: 24px;
+  height: 24px;
+}
+
+.card-premium {
+  padding: 2rem;
+}
+
+@media (max-width: 1200px) {
+  .dashboard-header-corp {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 2rem;
+  }
+  .grid-inner {
+    grid-template-columns: 1fr;
+  }
 }
-
-.chart-card {
-    margin-bottom: 0;
-}
-
-.event-selector {
-    margin-bottom: 1rem;
-}
-
-.event-selector select {
-    padding: 0.5rem;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-
-.mt-2 { margin-top: 0.5rem; }
-.text-center { text-align: center; }
-.error-message { color: #dc3545; background: #f8d7da; padding: 1rem; border-radius: 4px; }
-.loading-state { text-align: center; font-size: 1.2rem; color: #666; padding: 2rem; }
 </style>

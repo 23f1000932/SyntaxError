@@ -29,7 +29,17 @@ class RegistrationCreate(Resource):
         if existing:
             return {'message': 'Already registered'}, 400
             
-        reg = Registration(user_id=user_id, event_id=event_id, status='pending')
+        role = data.get('role', 'athlete')
+        role_details = data.get('role_details', {})
+
+        status = 'confirmed' if event.price == 0 else 'pending'
+        reg = Registration(
+            user_id=user_id,
+            event_id=event_id,
+            status=status,
+            role=role,
+            role_details=role_details
+        )
         try:
             db.session.add(reg)
             db.session.commit()

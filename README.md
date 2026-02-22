@@ -223,3 +223,22 @@ Confidential - For Internal Use Only (SE Team 026)
 ## Contact
 
 For questions or issues, contact SE Team 026 (Syntax Error)
+Backend (Flask)
+The backend manages the database, search, and AI services.
+
+bash
+cd backend
+source venv/bin/activate
+# Optional: Reset & seed the database
+# Start the server
+python run.py
+API URL: http://localhost:8000
+2. Frontend (Vue 3 + Vite)
+The frontend provides the user interface.
+
+bash
+cd frontend
+# Install dependencies (if not already done)
+# Start development server
+npm run dev
+App URL: http://localhost:5173

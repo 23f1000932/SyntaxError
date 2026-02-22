@@ -17,50 +17,57 @@ class RecommendationService:
 
     @staticmethod
     def get_recommended(user, limit=20):
-        q = Event.query.filter(Event.is_active == True)
+        # Always calculate registration count for fallback and tie-breakers (F1, F5)
+        reg_count = db.session.query(
+            Registration.event_id,
+            func.count(Registration.id).label('cnt')
+        ).group_by(Registration.event_id).subquery()
 
-        if user:
+        q = Event.query.filter(Event.is_active == True).outerjoin(
+            reg_count, Event.id == reg_count.c.event_id
+        )
+
+        now = datetime.utcnow()
+
+        if user and (user.preferred_sports or user.city or user.budget_preference):
             sports = user.preferred_sports or []
             city = user.city
             budget = user.budget_preference
 
-            sport_score = case(
-                (Event.sport_category.in_(sports), 4), else_=0
-            ) if sports else 0
+            # F1: Preferred sports match (+40)
+            sport_score = case((Event.sport_category.in_(sports), 40), else_=0) if sports else 0
 
-            city_score = case(
-                (Event.venue_city == city, 3), else_=0
-            ) if city else 0
+            # F2: City match (+30)
+            city_score = case((Event.venue_city == city, 30), else_=0) if city else 0
 
-            budget_score = case(
-                (Event.price_tier == budget, 2), else_=0
-            ) if budget else 0
+            # F4: Budget match (+20)
+            budget_score = case((Event.price_tier == budget, 20), else_=0) if budget else 0
 
-            week_end = datetime.utcnow() + timedelta(days=7)
-            date_score = case(
-                (Event.event_date <= week_end, 1), else_=0
-            )
+            # F3: Within next 7 days (+10)
+            week_end = now + timedelta(days=7)
+            date_score = case((db.and_(Event.event_date >= now, Event.event_date <= week_end), 10), else_=0)
 
-            total = date_score
+            total_score = date_score
             if sports:
-                total = total + sport_score
+                total_score = total_score + sport_score
             if city:
-                total = total + city_score
+                total_score = total_score + city_score
             if budget:
-                total = total + budget_score
+                total_score = total_score + budget_score
 
-            q = q.order_by(total.desc(), Event.event_date.asc())
+            # Sort by total preference score, then fallback to popularity (cnt), then proximity to current date
+            q = q.order_by(
+                Event.is_featured.desc(),
+                total_score.desc(),
+                func.coalesce(reg_count.c.cnt, 0).desc(),
+                Event.event_date.asc()
+            )
         else:
-            # Anonymous users: sort by popularity
-            reg_count = db.session.query(
-                Registration.event_id,
-                func.count(Registration.id).label('cnt')
-            ).group_by(Registration.event_id).subquery()
-
-            q = q.outerjoin(
-                reg_count, Event.id == reg_count.c.event_id
-            ).order_by(
-                func.coalesce(reg_count.c.cnt, 0).desc()
+            # F1 Fallback: New/Anonymous users see popular events ranked by registrations
+            q = q.order_by(
+                Event.is_featured.desc(),
+                func.coalesce(reg_count.c.cnt, 0).desc(),
+                Event.event_date.asc()
             )
 
         return q.limit(limit).all()

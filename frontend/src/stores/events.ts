@@ -41,8 +41,8 @@ export const useEventsStore = defineStore('events', () => {
     error.value = null;
     try {
       const response = await axios.post(`${API_URL}/events`, eventData);
-      events.value.push(response.data.event);
-      return response.data.event;
+      events.value.push(response.data);
+      return response.data;
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Failed to create event';
       throw err;

@@ -42,11 +42,12 @@ const renderChart = () => {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'top' },
-        title: { display: true, text: 'Registration Trend (Last 30 Days)' }
+        legend: { position: 'top', labels: { color: 'rgba(255,255,255,0.7)', font: { size: 11 } } },
+        title: { display: true, text: 'Registration Trend (Last 30 Days)', color: 'rgba(255,255,255,0.5)', font: { size: 12 } }
       },
       scales: {
-        y: { beginAtZero: true, ticks: { precision: 0 } }
+        x: { ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { beginAtZero: true, ticks: { precision: 0, color: 'rgba(255,255,255,0.5)' }, grid: { color: 'rgba(255,255,255,0.05)' } }
       }
     }
   });

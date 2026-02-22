@@ -11,23 +11,38 @@ from sqlalchemy import func, extract
 
 admin_ns = Namespace('admin', description='Admin operations')
 
-@admin_ns.route('/analytics')
-class AdminAnalytics(Resource):
+@admin_ns.route('/dashboard')
+class AdminDashboard(Resource):
     @jwt_required()
     @role_required('admin')
     def get(self):
-        """Get platform overview stats (Spec 6.7 / Feature 13)"""
+        """Unified Admin Dashboard metrics (US-07)"""
         total_users = User.query.count()
         total_events = Event.query.count()
         total_reg = Registration.query.filter_by(status='confirmed').count()
-        payments = Payment.query.filter_by(status='paid').all()
-        total_revenue = sum(p.amount for p in payments)
+        
+        sport_row = db.session.query(
+            Event.sport_category,
+            func.count(Registration.id).label('cnt')
+        ).join(Registration, Registration.event_id == Event.id)\
+         .filter(Registration.status == 'confirmed')\
+         .group_by(Event.sport_category)\
+         .order_by(func.count(Registration.id).desc()).first()
+         
+        popular_sport = sport_row.sport_category if sport_row else None
+        
+        city_rows = db.session.query(
+            User.city, func.count(User.id).label('count')
+        ).filter(User.city.isnot(None))\
+         .group_by(User.city).all()
+        city_distribution = [{'city': r.city, 'user_count': r.count} for r in city_rows]
 
         return {
             'total_users': total_users,
             'total_events': total_events,
             'total_registrations': total_reg,
-            'total_revenue': total_revenue
+            'most_popular_sport': popular_sport,
+            'city_distribution': city_distribution
         }, 200
 
 @admin_ns.route('/popular-sport')

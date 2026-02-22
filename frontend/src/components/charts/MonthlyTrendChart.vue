@@ -47,10 +47,11 @@ const renderChart = () => {
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        title: { display: true, text: 'Platform Monthly Registration Trend' }
+        title: { display: true, text: 'Platform Monthly Registration Trend', color: 'rgba(255,255,255,0.5)', font: { size: 12 } }
       },
       scales: {
-        y: { beginAtZero: true, ticks: { precision: 0 } }
+        x: { ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { beginAtZero: true, ticks: { precision: 0, color: 'rgba(255,255,255,0.5)' }, grid: { color: 'rgba(255,255,255,0.05)' } }
       }
     }
   });

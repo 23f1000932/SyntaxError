@@ -90,6 +90,7 @@ h3 {
   padding: 0.75rem 1rem;
   text-align: left;
   border-bottom: 1px solid #eee;
+  color: #333;
 }
 
 .data-table th {

@@ -1,71 +1,130 @@
 <template>
   <div class="event-detail-page">
-    <div class="container">
-      <button @click="$router.push('/home')" class="back-link">&larr; Back to Events</button>
+    <div class="luxury-bg-mesh">
+      <div class="aura-blob aura-1"></div>
+      <div class="aura-blob aura-2"></div>
+      <div class="aura-blob aura-3"></div>
+    </div>
 
-      <div v-if="loading" class="loading-state">Loading event details...</div>
+    <div class="container py-12">
+      <button @click="$router.push('/home')" class="back-btn-corp mb-12">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Return to Portal
+      </button>
+
+      <div v-if="loading" class="loading-corp-full">
+        <div class="pulse-loader"></div>
+        <span>Synchronizing Event Intelligence...</span>
+      </div>
       
-      <div v-else-if="error" class="error-state">{{ error }}</div>
+      <div v-else-if="error" class="error-panel-inline">{{ error }}</div>
       
-      <div v-else-if="event" class="detail-card">
-        <div class="header">
-          <h1>{{ event.title }}</h1>
-          <span class="badge" :class="event.price_tier">{{ event.price_tier?.toUpperCase() }}</span>
-        </div>
-
-        <div class="meta-info">
-          <div class="meta-item">
-            <strong>Sport:</strong> {{ event.sport_category }}
+      <div v-else-if="event" class="card-premium detail-card-corp animate-corp">
+        <div class="header-corp mb-12">
+          <div class="header-main">
+            <span class="badge-corp">{{ event.sport_category }}</span>
+            <h1 class="hero-title-large mt-6">{{ event.title }}</h1>
           </div>
-          <div class="meta-item">
-            <strong>Date:</strong> {{ new Date(event.event_date).toLocaleDateString() }}
-          </div>
-          <div class="meta-item">
-            <strong>Location:</strong> {{ event.venue_city }}
-          </div>
-          <div class="meta-item" v-if="event.venue_address">
-            <strong>Address:</strong> {{ event.venue_address }}
+          <div class="tier-box-corp">
+             <span class="label-muted">Access Tier</span>
+             <span class="text-gradient font-900 text-3xl mt-2 block">{{ event.price_tier?.toUpperCase() }}</span>
           </div>
         </div>
 
-        <div class="description">
-          <h3>About this Event</h3>
-          <p>{{ event.description || 'No description provided.' }}</p>
+        <div class="info-grid-corp mb-12">
+          <div class="info-item">
+            <label class="label-muted mb-3">Venue Coordinates</label>
+            <p class="text-xl font-600">{{ event.venue_city }}{{ event.venue_address ? `, ${event.venue_address}` : '' }}</p>
+          </div>
+          <div class="info-item">
+            <label class="label-muted mb-3">Temporal Window</label>
+            <p class="text-xl font-600">{{ new Date(event.event_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) }}</p>
+          </div>
         </div>
 
-        <div class="registration-panel">
-          <div class="stats">
-            <div class="stat-box">
-              <span class="label">Price</span>
-              <span class="value">₹{{ event.price }}</span>
+        <div class="description-section mb-12">
+          <label class="label-muted mb-6">Briefing</label>
+          <p class="text-dim text-lg leading-relaxed max-w-4xl">{{ event.description || 'No strategic briefing provided.' }}</p>
+        </div>
+
+        <div class="registration-panel-corp pt-12 border-top-luxury">
+          <div class="stats-grid-corp mb-12">
+            <div class="stat-box-corp">
+              <span class="label-muted mb-4 text-xs">Commitment Fee</span>
+              <span class="value text-4xl font-900">₹{{ event.price }}</span>
             </div>
-            <div class="stat-box">
-              <span class="label">Seats Remaining</span>
-              <span class="value">{{ event.seats_remaining }} / {{ event.capacity }}</span>
+            <div class="stat-box-corp">
+              <span class="label-muted mb-4 text-xs">Sector Availability</span>
+              <span class="value text-4xl font-900">{{ event.seats_remaining }} / {{ event.capacity }}</span>
             </div>
           </div>
 
-          <div class="action-section">
+          <div class="action-portal-corp">
             <template v-if="!authStore.isAuthenticated">
-              <p>Please <router-link to="/login">login</router-link> to register.</p>
+              <div class="auth-prompt-corp text-center">
+                <p class="text-dim mb-8">Authentication required for mission commitment.</p>
+                <router-link to="/login" class="btn-corp btn-corp-primary px-12">Login to Access</router-link>
+              </div>
             </template>
             <template v-else-if="authStore.isUser">
-              <div v-if="registrationStatus" class="status-msg">
-                You are currently: <strong>{{ registrationStatus }}</strong>
-                <button v-if="registrationStatus === 'confirmed'" @click="cancelRegistration" class="btn btn-danger ml-2">Cancel Ticket</button>
+              <div v-if="registrationStatus" class="status-panel-corp animate-corp">
+                <div class="status-info">
+                   <label class="label-muted mb-2">Registration Integrity</label>
+                   <p class="status-text">{{ registrationStatus.toUpperCase() }}</p>
+                </div>
+                <button v-if="registrationStatus === 'confirmed'" @click="cancelRegistration" class="btn-corp-link-danger">
+                  Abort Registration
+                </button>
               </div>
-              <button 
-                v-else-if="event.seats_remaining > 0"
-                @click="initiateBooking" 
-                class="btn btn-primary btn-lg"
-                :disabled="bookingInProgress"
-              >
-                {{ bookingInProgress ? 'Processing...' : 'Book Ticket' }}
-              </button>
-              <div v-else class="sold-out">This event is sold out!</div>
+              <!-- UNIFIED REGISTRATION FORM -->
+              <div v-else-if="event.seats_remaining > 0" class="registration-form mt-4 mb-8 text-left">
+                <h4 class="mb-4 text-xl font-900 label-muted">Registration Details</h4>
+                <div class="input-stack mb-4">
+                  <label class="label-muted mb-2">Select Role</label>
+                  <select v-model="regForm.role" class="input-corp w-full">
+                    <option value="athlete">Athlete / Participant</option>
+                    <option value="sub_vendor">Sub-Vendor / Support Provider</option>
+                  </select>
+                </div>
+                
+                <div v-if="regForm.role === 'athlete'" class="input-stack mb-4">
+                  <label class="label-muted mb-2">Team / Club Name (Optional)</label>
+                  <input type="text" v-model="regForm.role_details.team" class="input-corp w-full" placeholder="e.g. Thunderbolts" />
+                </div>
+                
+                <div v-if="regForm.role === 'sub_vendor'" class="input-stack mb-4">
+                  <label class="label-muted mb-2">Service Type</label>
+                  <select v-model="regForm.role_details.service" class="input-corp w-full">
+                    <option value="catering">Food & Catering</option>
+                    <option value="medical">Medical Support</option>
+                    <option value="logistics">Equipment / Logistics</option>
+                  </select>
+                </div>
+                
+                <button 
+                  @click="submitRegistrationForm" 
+                  class="btn-corp btn-corp-primary w-full py-6 text-lg mt-4"
+                  :disabled="bookingInProgress"
+                >
+                  {{ bookingInProgress ? 'Processing Metadata...' : 'Book Event Ticket' }}
+                </button>
+              </div>
+              <div v-else class="sold-out-panel">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                <span>Capacity Reached</span>
+              </div>
             </template>
           </div>
         </div>
+      </div>
+      
+      <div v-if="event" class="similar-events-corp mt-20 animate-corp delay-200">
+        <h3 class="label-muted mb-10">Lateral Opportunities</h3>
+        <RecommendationRow 
+          :eventId="event.id" 
+          title="" 
+          :limit="4" 
+        />
       </div>
     </div>
 
@@ -83,13 +142,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '../stores/auth';
 import RazorpayCheckout from '../components/payment/RazorpayCheckout.vue';
+import RecommendationRow from '../components/RecommendationRow.vue';
 
 const route = useRoute();
-const router = useRouter();
 const authStore = useAuthStore();
 
 const event = ref<any>(null);
@@ -98,7 +157,6 @@ const error = ref('');
 const registrationStatus = ref<string | null>(null);
 const currentRegistrationId = ref<number | null>(null);
 
-// Payment State
 const bookingInProgress = ref(false);
 const showCheckout = ref(false);
 const orderData = ref<any>(null);
@@ -132,6 +190,50 @@ const checkRegistrationStatus = async () => {
   }
 };
 
+const regForm = ref({
+  role: 'athlete',
+  role_details: {
+    team: '',
+    service: 'catering'
+  }
+});
+
+const submitRegistrationForm = async () => {
+  bookingInProgress.value = true;
+  try {
+    await axios.post(
+      'http://localhost:8000/api/registrations',
+      { 
+        event_id: event.value.id,
+        role: regForm.value.role,
+        role_details: regForm.value.role_details
+      },
+      { headers: { Authorization: `Bearer ${authStore.token}` } }
+    );
+    
+    if (event.value.price === 0) {
+      alert('Registration successful! (Free Event)');
+      bookingInProgress.value = false;
+      fetchEvent();
+      return;
+    }
+    
+    initiateBooking();
+  } catch (err: any) {
+    if (err.response?.data?.message === 'Already registered') {
+       if (event.value.price > 0) {
+          initiateBooking();
+       } else {
+         alert('You are already registered!');
+         bookingInProgress.value = false;
+       }
+    } else {
+      alert(err.response?.data?.message || 'Failed to submit registration');
+      bookingInProgress.value = false;
+    }
+  }
+};
+
 const initiateBooking = async () => {
   bookingInProgress.value = true;
   try {
@@ -152,7 +254,7 @@ const initiateBooking = async () => {
 const handlePaymentSuccess = () => {
   showCheckout.value = false;
   alert('Payment successful! Your ticket is confirmed.');
-  fetchEvent(); // Refresh data
+  fetchEvent();
 };
 
 const handlePaymentError = (msg: string) => {
@@ -182,145 +284,126 @@ onMounted(() => {
 
 <style scoped>
 .event-detail-page {
-  padding: 2rem 0;
-  background-color: #f5f5f5;
-  min-height: calc(100vh - 80px);
+  background-color: var(--bg-site);
+  min-height: 100vh;
+  position: relative;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.back-link {
+.back-btn-corp {
   background: none;
   border: none;
-  color: #00bcd4;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 800;
   cursor: pointer;
-  font-size: 1rem;
-  margin-bottom: 2rem;
-  padding: 0;
+  transition: all 0.3s var(--ease-luxury);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
 }
 
-.detail-card {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+.back-btn-corp:hover {
+  color: white;
+  transform: translateX(-8px);
 }
 
-.header {
-  padding: 2rem;
-  border-bottom: 1px solid #eee;
+.detail-card-corp {
+  padding: 2.5rem;
+}
+
+.hero-title-large {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.info-grid-corp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.stats-grid-corp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.border-top-luxury {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.status-panel-corp {
+  background: rgba(0, 112, 243, 0.05);
+  border: 1px solid rgba(0, 112, 243, 0.2);
+  padding: 2rem 3rem;
+  border-radius: var(--radius-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.header h1 {
-  margin: 0;
-  font-size: 2rem;
-  color: #333;
-}
-
-.badge {
-  padding: 0.5rem 1rem;
-  border-radius: 50px;
-  font-size: 0.85rem;
-  font-weight: bold;
-}
-.badge.cheap { background: #e8f5e9; color: #2e7d32; }
-.badge.mid { background: #e3f2fd; color: #1565c0; }
-.badge.premium { background: #fff3e0; color: #ef6c00; }
-
-.meta-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 2rem;
-  background: #fafafa;
-}
-
-.meta-item {
-  color: #555;
-}
-
-.description {
-  padding: 2rem;
-}
-
-.description h3 {
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-.registration-panel {
-  padding: 2rem;
-  background: #f8f9fa;
-  border-top: 1px solid #eee;
-}
-
-.stats {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.stat-box {
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  flex: 1;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.stat-box .label {
-  display: block;
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-.stat-box .value {
-  display: block;
+.status-text {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
+  font-weight: 900;
+  color: var(--brand-primary);
+  margin-top: 0.5rem;
+  letter-spacing: 0.05em;
 }
 
-.action-section {
-  text-align: center;
-}
-
-.btn {
-  padding: 0.75rem 1.5rem;
+.btn-corp-link-danger {
+  color: #ff5555;
+  background: none;
   border: none;
-  border-radius: 4px;
-  font-weight: bold;
+  font-weight: 800;
   cursor: pointer;
-  transition: opacity 0.3s;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: var(--transition-fast);
 }
 
-.btn:hover { opacity: 0.9; }
+.btn-corp-link-danger:hover {
+  filter: brightness(1.2);
+  text-decoration: underline;
+}
 
-.btn-primary { background: #00bcd4; color: white; }
-.btn-danger { background: #dc3545; color: white; }
-.btn-lg { padding: 1rem 3rem; font-size: 1.1rem; }
-
-.ml-2 { margin-left: 0.5rem; }
-
-.sold-out {
-  color: #dc3545;
-  font-weight: bold;
+.sold-out-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--text-dim);
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
   font-size: 1.2rem;
+  letter-spacing: 0.2em;
 }
 
-.status-msg {
-  padding: 1rem;
-  background: #d4edda;
-  color: #155724;
-  border-radius: 4px;
+.loading-corp-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 80px 0;
+  color: var(--text-dim);
+}
+
+.text-xl { font-size: 1.1rem; }
+.text-3xl { font-size: 1.5rem; }
+.text-4xl { font-size: 1.75rem; }
+.font-600 { font-weight: 600; }
+.font-900 { font-weight: 900; }
+
+@media (max-width: 1024px) {
+  .detail-card-corp { padding: 1.5rem; }
+  .hero-title-large { font-size: 2rem; }
+  .info-grid-corp, .stats-grid-corp { grid-template-columns: 1fr; gap: 1.5rem; }
 }
 </style>

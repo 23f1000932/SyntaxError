@@ -15,8 +15,9 @@ export const useAuthStore = defineStore('auth', () => {
   // Computed
   const isAuthenticated = computed(() => !!token.value);
   const isAdmin = computed(() => role.value === 'admin');
-  const isOrganizer = computed(() => role.value === 'organizer');
+  const isOrganizer = computed(() => role.value === 'organizer' || role.value === 'founder');
   const isUser = computed(() => role.value === 'user');
+  const isFounder = computed(() => role.value === 'founder');
 
   // Methods
   const register = async (userData: any) => {
@@ -115,6 +116,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAdmin,
     isOrganizer,
     isUser,
+    isFounder,
     register,
     login,
     fetchProfile,

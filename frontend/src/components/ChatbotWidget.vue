@@ -3,44 +3,54 @@
     <!-- Chat Button -->
     <button 
       v-if="!isOpen" 
-      class="chat-toggle-btn"
+      class="chat-toggle-btn animate-corp"
       @click="isOpen = true"
     >
-      💬 Chat Support
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      Support Interface
     </button>
 
     <!-- Chat Window -->
-    <div v-else class="chat-window">
-      <div class="chat-header">
-        <h4>AI Support Assistant</h4>
-        <button class="close-btn" @click="isOpen = false">&times;</button>
+    <div v-else class="chat-window card-premium animate-corp">
+      <div class="chat-header-corp">
+        <div class="header-main">
+          <span class="badge-corp text-xs">AI Core</span>
+          <h4 class="font-800 mt-2">Support Terminal</h4>
+        </div>
+        <button class="close-btn-corp" @click="isOpen = false">&times;</button>
       </div>
 
-      <div class="chat-messages" ref="messagesContainer">
+      <div class="chat-messages-corp" ref="messagesContainer">
         <div 
           v-for="(msg, index) in messages" 
           :key="index"
-          :class="['message', msg.role]"
+          :class="['message-corp', msg.role]"
         >
           <div class="msg-content">{{ msg.content }}</div>
-          <div v-if="msg.escalated" class="escalation-warning">
-            ⚠️ Transferred to human agent.
+          <div v-if="msg.escalated" class="escalation-warning-corp">
+             PROTOCOL ALERT: Transferred to Human Operator
           </div>
         </div>
-        <div v-if="loading" class="message bot loading-dots">
-          Typing...
+        <div v-if="loading" class="message-corp bot loading-indicator">
+          Synchronizing response...
         </div>
       </div>
 
-      <div class="chat-input-area">
-        <input 
-          v-model="inputMsg" 
-          @keyup.enter="sendMessage"
-          type="text" 
-          placeholder="Ask a question..."
-          :disabled="loading"
-        />
-        <button @click="sendMessage" :disabled="!inputMsg.trim() || loading">Send</button>
+      <div class="chat-input-area-corp input-stack">
+        <label class="label-muted mb-2">Query Prompt</label>
+        <div class="input-action-group">
+          <input 
+            v-model="inputMsg" 
+            @keyup.enter="sendMessage"
+            type="text" 
+            placeholder="Input operational inquiry..."
+            class="input-corp"
+            :disabled="loading"
+          />
+          <button @click="sendMessage" :disabled="!inputMsg.trim() || loading" class="btn-corp btn-corp-primary px-6">
+             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -64,7 +74,7 @@ type Message = {
 };
 
 const messages = ref<Message[]>([
-  { role: 'bot', content: 'Hi there! I can help you with registrations, events, and payments. What do you need help with?' }
+  { role: 'bot', content: 'Operational Support Ready. How can I assist with your deployments today?' }
 ]);
 
 const scrollToBottom = async () => {
@@ -78,7 +88,6 @@ const sendMessage = async () => {
   const txt = inputMsg.value.trim();
   if (!txt) return;
 
-  // Add User message
   messages.value.push({ role: 'user', content: txt });
   inputMsg.value = '';
   loading.value = true;
@@ -103,7 +112,7 @@ const sendMessage = async () => {
   } catch (err) {
     messages.value.push({ 
       role: 'bot', 
-      content: 'Sorry, I am having trouble connecting to the server.' 
+      content: 'Critical Error: Support Terminal unreachable.' 
     });
   } finally {
     loading.value = false;
@@ -115,137 +124,114 @@ const sendMessage = async () => {
 <style scoped>
 .chatbot-widget {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 3rem;
+  right: 3rem;
   z-index: 1000;
 }
 
 .chat-toggle-btn {
-  background: #00bcd4;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--brand-primary);
   color: white;
   border: none;
-  padding: 1rem 1.5rem;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: bold;
+  padding: 1.25rem 2rem;
+  border-radius: var(--radius-pill);
+  font-size: 1rem;
+  font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: transform 0.2s;
-}
-
-.chat-toggle-btn:hover {
-  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(0, 112, 243, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .chat-window {
-  width: 350px;
-  height: 500px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+  width: 400px;
+  height: 600px;
   display: flex;
   flex-direction: column;
+  padding: 0;
   overflow: hidden;
 }
 
-.chat-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 1rem;
+.chat-header-corp {
+  padding: 2.5rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.chat-header h4 { margin: 0; }
-
-.close-btn {
+.close-btn-corp {
   background: none;
   border: none;
-  color: white;
-  font-size: 1.5rem;
+  color: var(--text-dim);
+  font-size: 2rem;
   cursor: pointer;
+  line-height: 0.5;
 }
 
-.chat-messages {
+.chat-messages-corp {
   flex: 1;
-  padding: 1rem;
+  padding: 2.5rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  background: #f9f9f9;
+  gap: 1.5rem;
+  background: rgba(0,0,0,0.2);
+  scrollbar-width: none;
 }
 
-.message {
-  max-width: 80%;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
+.chat-messages-corp::-webkit-scrollbar { display: none; }
+
+.message-corp {
+  max-width: 85%;
+  padding: 1.25rem 1.75rem;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
-.message.user {
+.message-corp.user {
   align-self: flex-end;
-  background: #00bcd4;
+  background: var(--brand-primary);
   color: white;
   border-bottom-right-radius: 2px;
 }
 
-.message.bot {
+.message-corp.bot {
   align-self: flex-start;
-  background: white;
-  color: #333;
-  border: 1px solid #eee;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
   border-bottom-left-radius: 2px;
 }
 
-.escalation-warning {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-  color: #d32f2f;
-  background: #ffebee;
-  padding: 0.5rem;
-  border-radius: 4px;
+.escalation-warning-corp {
+  margin-top: 1rem;
+  color: #ffab00;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.chat-input-area {
-  padding: 1rem;
-  background: white;
-  border-top: 1px solid #eee;
+.chat-input-area-corp {
+  padding: 2rem 2.5rem 2.5rem;
+  background: var(--bg-secondary);
+}
+
+.input-action-group {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
-.chat-input-area input {
-  flex: 1;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  outline: none;
-}
-
-.chat-input-area input:focus {
-  border-color: #00bcd4;
-}
-
-.chat-input-area button {
-  background: #00bcd4;
-  color: white;
-  border: none;
-  padding: 0 1rem;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.chat-input-area button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.loading-dots {
-  color: #888;
+.loading-indicator {
   font-style: italic;
+  color: var(--text-dim);
 }
+
+.font-800 { font-weight: 800; }
 </style>

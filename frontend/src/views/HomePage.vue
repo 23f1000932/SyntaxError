@@ -1,44 +1,69 @@
 <template>
-  <div class="home-page">
-    <div class="header-section">
-      <h1>Discover Sports Events</h1>
-      
-      <div class="search-bar">
-        <!-- Future Algolia Search Integration here -->
-        <input 
-          type="text" 
-          v-model="searchQuery" 
-          placeholder="Search by event title, sport, or city..."
-          class="search-input"
-        />
+  <div class="home-page animate-corp">
+    <header class="hero-v3">
+      <div class="container text-center animate-corp">
+        <span class="badge-corp">Discover &amp; Register</span>
+        <h1 class="hero-main-title delay-100">
+          Find Your Next <span class="text-gradient">Sports Event.</span>
+        </h1>
+        <p class="hero-description delay-200">
+          Browse upcoming tournaments, register instantly, and track your participation — all in one place.
+        </p>
+
+        <div v-if="authStore.isAuthenticated && authStore.isUser" class="hero-personalized-track mt-8 animate-corp delay-300">
+           <RecommendationRow title="Recommended for You" :limit="4" />
+        </div>
       </div>
-    </div>
+    </header>
 
-    <div v-if="loading" class="loading-state">
-      <p>Loading events...</p>
-    </div>
+    <section class="section-spacer">
+      <div class="container">
+        <div class="section-header-flex mb-10 animate-corp">
+          <div class="header-text">
+            <h2 class="section-title-large">Browse Events</h2>
+            <p class="section-subtitle">Find and join the latest sports events near you.</p>
+          </div>
+          <div class="search-luxury-wrapper input-stack">
+            <label class="label-muted mb-2">Architectural Search</label>
+            <input 
+              type="text" 
+              v-model="searchQuery" 
+              placeholder="Search by title, category, or bio-region..."
+              class="input-corp"
+            />
+          </div>
 
-    <div v-else-if="error" class="error-state">
-      <p>{{ error }}</p>
-      <button @click="fetchEvents" class="btn btn-primary">Try Again</button>
-    </div>
+          <div class="filter-luxury-wrapper input-stack">
+            <label class="label-muted mb-2">Budget Bracket</label>
+            <select v-model="budgetFilter" class="input-corp">
+              <option value="all">All Brackets</option>
+              <option value="cheap">Standard (< ₹500)</option>
+              <option value="mid">Mid-Tier (₹500 - ₹2000)</option>
+              <option value="premium">Elite Suite (> ₹2000)</option>
+            </select>
+          </div>
+        </div>
 
-    <div v-else-if="filteredEvents.length === 0" class="empty-state">
-      <p>No events found matching your criteria.</p>
-    </div>
+        <div v-if="loading" class="loading-corp py-12">
+          <div class="pulse-loader mx-auto mb-6"></div>
+          <span class="text-dim">Fetching events...</span>
+        </div>
 
-    <div v-else class="events-grid">
-      <EventCard 
-        v-for="event in filteredEvents" 
-        :key="event.id" 
-        :event="event" 
-      />
-    </div>
+        <div v-else-if="error" class="error-corp card-premium text-center py-12">
+          <h3 class="mb-4">Failed to load</h3>
+          <p class="text-dim mb-6">{{ error }}</p>
+          <button @click="fetchEvents" class="btn-corp btn-corp-primary justify-center">Try Again</button>
+        </div>
 
-    <!-- Future RecommendationRow Integration here -->
-    
-    <!-- Future ChatbotWidget Integration here -->
-
+        <div v-else class="events-grid-premium animate-corp delay-100">
+          <EventCard 
+            v-for="event in filteredEvents" 
+            :key="event.id" 
+            :event="event" 
+          />
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -46,12 +71,14 @@
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import EventCard from '../components/EventCard.vue';
+import RecommendationRow from '../components/RecommendationRow.vue';
 import { useAuthStore } from '../stores/auth';
 
 const events = ref<any[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const searchQuery = ref('');
+const budgetFilter = ref('all');
 const authStore = useAuthStore();
 
 const fetchEvents = async () => {
@@ -62,12 +89,12 @@ const fetchEvents = async () => {
         headers: { Authorization: `Bearer ${authStore.token}` }
     } : {};
     
-    // Calls the recommended endpoint which returns events sorted by preference
-    const response = await axios.get('http://localhost:8000/api/events', config);
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+    const response = await axios.get(`${baseUrl}/events`, config);
     events.value = response.data;
   } catch (err: any) {
     console.error('Error fetching events:', err);
-    error.value = 'Failed to load events. Please try again later.';
+    error.value = 'Service unavailable. Please verify connectivity.';
   } finally {
     loading.value = false;
   }
@@ -78,91 +105,73 @@ onMounted(() => {
 });
 
 const filteredEvents = computed(() => {
-  if (!searchQuery.value) return events.value;
+  let result = events.value;
   
-  const query = searchQuery.value.toLowerCase();
-  return events.value.filter(event => 
-    event.title.toLowerCase().includes(query) ||
-    event.sport_category.toLowerCase().includes(query) ||
-    (event.venue_city && event.venue_city.toLowerCase().includes(query))
-  );
+  if (budgetFilter.value !== 'all') {
+    result = result.filter(e => e.price_tier === budgetFilter.value);
+  }
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    result = result.filter(event => 
+      event.title.toLowerCase().includes(query) ||
+      event.sport_category.toLowerCase().includes(query) ||
+      (event.venue_city && event.venue_city.toLowerCase().includes(query))
+    );
+  }
+  
+  return result;
 });
 </script>
 
 <style scoped>
 .home-page {
-  padding: 2rem 0;
+  padding-top: var(--nav-height);
 }
 
-.header-section {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.header-section h1 {
-  font-size: 2.5rem;
-  color: #333;
+.hero-main-title {
   margin-bottom: 1.5rem;
 }
 
-.search-bar {
-  max-width: 600px;
-  margin: 0 auto;
+.hero-description {
+  margin-bottom: 2rem;
 }
 
-.search-input {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 50px;
-  outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+.section-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.search-input:focus {
-  border-color: #00bcd4;
-  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+.search-luxury-wrapper {
+  flex: 1;
+  min-width: 200px;
 }
 
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+.filter-luxury-wrapper {
+  width: 200px;
 }
 
-.loading-state,
-.error-state,
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: #f9f9f9;
-  border-radius: 8px;
+.loading-corp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-.error-state {
-  color: #dc3545;
-}
-
-.error-state p {
-  margin-bottom: 1rem;
-}
-
-.btn {
-  padding: 0.5rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-primary {
-  background-color: #00bcd4;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #009eb3;
+@media (max-width: 1024px) {
+  .section-header-flex {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-luxury-wrapper,
+  .filter-luxury-wrapper {
+    width: 100%;
+  }
 }
 </style>
+
+

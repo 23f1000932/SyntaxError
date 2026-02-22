@@ -6,18 +6,32 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'landing',
+      component: () => import('../views/LandingPage.vue')
+    },
+    {
+      path: '/home',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/HomePage.vue'),
+      meta: { requiresAuth: true }
     },
     {
-      path: '/events',
-      name: 'events',
-      component: () => import('../views/EventsView.vue')
+      path: '/organizer',
+      name: 'organizer',
+      component: () => import('../views/OrganizerDashboard.vue'),
+      meta: { requiresAuth: true, role: 'organizer' }
     },
     {
-      path: '/events/:id',
-      name: 'event-detail',
-      component: () => import('../views/EventDetailView.vue')
+      path: '/organizer/create',
+      name: 'create-event',
+      component: () => import('../views/CreateEvent.vue'),
+      meta: { requiresAuth: true, role: 'organizer' }
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('../views/AdminDashboard.vue'),
+      meta: { requiresAuth: true, role: 'admin' }
     },
     {
       path: '/login',
@@ -32,21 +46,32 @@ const router = createRouter({
       meta: { guestOnly: true }
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: () => import('../views/DashboardView.vue'),
-      meta: { requiresAuth: true }
+      path: '/events/:id',
+      name: 'event-detail',
+      component: () => import('../views/EventDetail.vue')
+    },
+    {
+      path: '/my-registrations',
+      name: 'my-registrations',
+      component: () => import('../views/MyRegistrations.vue'),
+      meta: { requiresAuth: true, role: 'user' }
     }
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
   const isAuthenticated = !!authStore.token
+  const userRole = authStore.role
 
   if (to.meta.requiresAuth && !isAuthenticated) {
     next('/login')
   } else if (to.meta.guestOnly && isAuthenticated) {
+    if (userRole === 'admin') next('/admin')
+    else if (userRole === 'organizer') next('/organizer')
+    else next('/home')
+  } else if (to.meta.role && to.meta.role !== userRole) {
+    // Role mismatch (e.g. user trying to access admin dashboard)
     next('/')
   } else {
     next()

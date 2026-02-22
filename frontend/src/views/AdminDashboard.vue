@@ -1,76 +1,112 @@
 <template>
   <div class="admin-dashboard">
-    <div class="header-section">
-      <h1>Platform Administrator Overview</h1>
-      <button @click="fetchData" class="btn btn-outline" :disabled="loading">
-        ↻ Refresh Data
-      </button>
+    <div class="luxury-bg-mesh">
+      <div class="aura-blob aura-1"></div>
+      <div class="aura-blob aura-2"></div>
+      <div class="aura-blob aura-3"></div>
     </div>
 
-    <div v-if="loading" class="loading-state">Loading system analytics...</div>
-    <div v-else-if="error" class="error-message">{{ error }}</div>
-    
-    <div v-else class="dashboard-content">
-      <!-- Feature 13: Top-level Platform Stats -->
-      <section class="kpi-grid">
-        <div class="kpi-card">
-          <h4>Total Users</h4>
-          <span class="kpi-val">{{ overview.total_users }}</span>
+    <div class="container py-12">
+      <div class="dashboard-header-corp mb-12 animate-corp">
+        <div class="header-text">
+          <span class="badge-corp">Platform Intelligence</span>
+          <h1 class="hero-title-small mt-4">Command Overview</h1>
+          <p class="text-dim mt-2">High-level telemetry of platform operatives and architectural efficiency.</p>
         </div>
-        <div class="kpi-card">
-          <h4>Active Events</h4>
-          <span class="kpi-val">{{ overview.total_events }}</span>
-        </div>
-        <div class="kpi-card">
-          <h4>Total Registrations</h4>
-          <span class="kpi-val">{{ overview.total_registrations }}</span>
-        </div>
-        <div class="kpi-card">
-          <h4>Total Revenue</h4>
-          <span class="kpi-val">₹{{ overview.total_revenue?.toLocaleString() }}</span>
-        </div>
-      </section>
-
-      <!-- Charts Row 1 -->
-      <div class="charts-row">
-        <!-- Feature 17: Monthly Trend -->
-        <div class="chart-wrapper">
-          <MonthlyTrendChart :data="monthlyTrend" />
-        </div>
-        
-        <!-- Feature 15: City Distribution -->
-        <div class="chart-wrapper">
-          <CityDistributionChart :data="cityData" />
-        </div>
+        <button @click="fetchData" class="btn-corp btn-corp-outline" :disabled="loading">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+          Re-Sync Platform
+        </button>
       </div>
 
-      <!-- Feature 16: Fill Rates Table -->
-      <FillRateTable :data="fillRates" />
+      <div v-if="loading" class="loading-corp-full">
+        <div class="pulse-loader"></div>
+        <span>fetching System Analytics...</span>
+      </div>
+      
+      <div v-else-if="error" class="error-panel-inline mb-12">{{ error }}</div>
+      
+      <div v-else class="dashboard-content">
+        <!-- Feature 13: Top-level Platform Stats -->
+        <section class="kpi-grid mb-12 animate-corp delay-100">
+          <div class="card-premium kpi-card-corp">
+            <span class="label-muted mb-4">Total Operatives</span>
+            <span class="kpi-val-corp text-gradient">{{ overview.total_users }}</span>
+          </div>
+          <div class="card-premium kpi-card-corp">
+            <span class="label-muted mb-4">Active Deployments</span>
+            <span class="kpi-val-corp text-gradient">{{ overview.total_events }}</span>
+          </div>
+          <div class="card-premium kpi-card-corp">
+            <span class="label-muted mb-4">Total Commitments</span>
+            <span class="kpi-val-corp text-gradient">{{ overview.total_registrations }}</span>
+          </div>
+          <div class="card-premium kpi-card-corp">
+            <span class="label-muted mb-4">Aggregate Yield</span>
+            <span class="kpi-val-corp text-gradient">₹{{ overview.total_revenue?.toLocaleString() }}</span>
+          </div>
+        </section>
 
-      <!-- Feature 18: Organizer Leaderboard -->
-      <section class="table-section mt-4">
-        <h3>Top Organizers</h3>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Organizer Name</th>
-              <th>Total Events</th>
-              <th>Registrations Generated</th>
-              <th>Total Revenue</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(org, i) in topOrganizers" :key="org.organizer_id">
-              <td>#{{ i + 1 }}</td>
-              <td>{{ org.organizer_name }}</td>
-              <td>{{ org.total_events }}</td>
-              <td>{{ org.total_registrations }}</td>
-              <td>₹{{ org.total_revenue.toLocaleString() }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+        <!-- Charts Row 1 -->
+        <div class="charts-row mb-12">
+          <!-- Feature 17: Monthly Trend -->
+          <section class="card-premium animate-corp delay-200">
+            <h2 class="label-muted mb-10">Temporal Growth Trend</h2>
+            <MonthlyTrendChart :data="monthlyTrend" />
+          </section>
+          
+          <!-- Feature 15: City Distribution -->
+          <section class="card-premium animate-corp delay-300">
+            <h2 class="label-muted mb-10">Bio-Region Distribution</h2>
+            <CityDistributionChart :data="cityData" />
+          </section>
+
+          <!-- Feature 14: Most Popular Sport Category -->
+          <section class="card-premium animate-corp delay-300">
+            <h2 class="label-muted mb-8">Sport Category Distribution</h2>
+            <SportDonutChart :data="popularSports" />
+          </section>
+        </div>
+
+        <!-- Feature 16: Fill Rates Chart -->
+        <section class="card-premium mb-12 animate-corp delay-400">
+           <h2 class="label-muted mb-8">Event Fill Rates</h2>
+           <FillRateChart :data="fillRates" />
+        </section>
+
+        <!-- Feature 18: Organizer Comparison Chart -->
+        <section class="card-premium mb-12 animate-corp delay-400">
+          <h2 class="label-muted mb-8">Organizer Performance</h2>
+          <OrganizerComparisonChart :data="topOrganizers" />
+        </section>
+
+        <!-- Organizer Leaderboard Table -->
+        <section class="card-premium animate-corp delay-400">
+          <h2 class="label-muted mb-10">Elite Architect Performance</h2>
+          <div class="table-wrapper-corp">
+            <table class="table-corp">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Architect Name</th>
+                  <th>Deployments</th>
+                  <th>Commitments</th>
+                  <th>Total Yield (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(org, i) in topOrganizers" :key="org.organizer_id">
+                  <td class="text-dim font-800">#{{ i + 1 }}</td>
+                  <td class="font-800">{{ org.organizer_name }}</td>
+                  <td>{{ org.total_events }}</td>
+                  <td>{{ org.total_registrations }}</td>
+                  <td class="text-gradient font-900">₹{{ org.total_revenue.toLocaleString() }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -81,7 +117,9 @@ import axios from 'axios';
 import { useAuthStore } from '../stores/auth';
 import MonthlyTrendChart from '../components/charts/MonthlyTrendChart.vue';
 import CityDistributionChart from '../components/charts/CityDistributionChart.vue';
-import FillRateTable from '../components/charts/FillRateTable.vue';
+import FillRateChart from '../components/charts/FillRateChart.vue';
+import OrganizerComparisonChart from '../components/charts/OrganizerComparisonChart.vue';
+import SportDonutChart from '../components/charts/SportDonutChart.vue';
 
 const authStore = useAuthStore();
 const loading = ref(true);
@@ -93,6 +131,7 @@ const monthlyTrend = ref<any[]>([]);
 const cityData = ref<any[]>([]);
 const fillRates = ref<any[]>([]);
 const topOrganizers = ref<any[]>([]);
+const popularSports = ref<any[]>([]);
 
 const fetchData = async () => {
   loading.value = true;
@@ -113,6 +152,7 @@ const fetchData = async () => {
     cityData.value = cityRes.data;
     fillRates.value = fillRes.data;
     topOrganizers.value = orgRes.data;
+    popularSports.value = (await axios.get('http://localhost:8000/api/admin/popular-sport', config)).data;
 
   } catch (err: any) {
     error.value = 'Failed to load admin analytics. ' + (err.response?.data?.message || '');
@@ -126,100 +166,117 @@ onMounted(() => fetchData());
 
 <style scoped>
 .admin-dashboard {
-  padding: 2rem 0;
+  background-color: var(--bg-site);
+  min-height: 100vh;
+  position: relative;
 }
 
-.header-section {
+.dashboard-header-corp {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  align-items: flex-end;
 }
-
-.btn-outline {
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: 1px solid #00bcd4;
-  color: #00bcd4;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.btn-outline:hover { background: rgba(0, 188, 212, 0.1); }
-.btn-outline:disabled { opacity: 0.5; }
 
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }
 
-.kpi-card {
-  background: white;
+.kpi-card-corp {
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
-.kpi-card h4 {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-}
-
-.kpi-val {
+.kpi-val-corp {
   font-size: 2rem;
-  font-weight: bold;
-  color: #333;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .charts-row {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1.5rem;
-  margin-bottom: 1.5rem;
 }
 
-.chart-wrapper {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+.sport-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
-.table-section {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+.sport-stat-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.table-section h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: #333;
+.table-wrapper-corp {
+  overflow-x: auto;
 }
 
-.data-table {
+.table-corp {
   width: 100%;
-  border-collapse: collapse;
 }
 
-.data-table th, .data-table td {
-  padding: 0.75rem 1rem;
+.table-corp th {
   text-align: left;
-  border-bottom: 1px solid #eee;
+  padding: 0.75rem 1rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.data-table th {
-  background-color: #f8f9fa;
-  font-weight: 600;
-  color: #555;
+.table-corp td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.9rem;
 }
 
-.mt-4 { margin-top: 1.5rem; }
-.error-message { color: #dc3545; background: #f8d7da; padding: 1rem; border-radius: 4px; }
-.loading-state { text-align: center; font-size: 1.2rem; color: #666; padding: 2rem; }
+.loading-corp-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 60px 0;
+  color: var(--text-dim);
+}
+
+.error-panel-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #ff5555;
+  font-size: 0.85rem;
+  padding: 1rem;
+  background: rgba(255, 85, 85, 0.05);
+  border: 1px solid rgba(255, 85, 85, 0.1);
+  border-radius: var(--radius-sm);
+}
+
+.hero-title-small {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+@media (max-width: 1200px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
+  .dashboard-header-corp { flex-direction: column; align-items: flex-start; gap: 2rem; }
+}
+
+@media (max-width: 640px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+}
 </style>
