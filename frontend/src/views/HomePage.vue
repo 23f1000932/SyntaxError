@@ -18,29 +18,31 @@
 
     <section class="section-spacer">
       <div class="container">
-        <div class="section-header-flex mb-10 animate-corp">
+        <div class="section-header-flex mb-12 animate-corp p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
           <div class="header-text">
-            <h2 class="section-title-large">Browse Events</h2>
-            <p class="section-subtitle">Find and join the latest sports events near you.</p>
+            <h2 class="section-title-large text-brand-primary">Browse Events</h2>
+            <p class="section-subtitle opacity-75">Find and join the latest sports events near you.</p>
           </div>
-          <div class="search-luxury-wrapper input-stack">
-            <label class="label-muted mb-2">Architectural Search</label>
-            <input 
-              type="text" 
-              v-model="searchQuery" 
-              placeholder="Search by title, category, or bio-region..."
-              class="input-corp"
-            />
-          </div>
+          <div class="flex gap-4 w-full md:w-auto mt-4 md:mt-0">
+            <div class="search-luxury-wrapper w-full md:w-64">
+              <label class="label-muted mb-2 text-[10px] tracking-widest text-white/50">Architectural Search</label>
+              <input 
+                type="text" 
+                v-model="searchQuery" 
+                placeholder="Search events..."
+                class="input-corp bg-black/40 border-white/10 focus:border-brand-primary focus:shadow-[0_0_15px_rgba(0,240,255,0.2)]"
+              />
+            </div>
 
-          <div class="filter-luxury-wrapper input-stack">
-            <label class="label-muted mb-2">Budget Bracket</label>
-            <select v-model="budgetFilter" class="input-corp">
-              <option value="all">All Brackets</option>
-              <option value="cheap">Standard (< ₹500)</option>
-              <option value="mid">Mid-Tier (₹500 - ₹2000)</option>
-              <option value="premium">Elite Suite (> ₹2000)</option>
-            </select>
+            <div class="filter-luxury-wrapper w-full md:w-48">
+              <label class="label-muted mb-2 text-[10px] tracking-widest text-white/50">Budget Bracket</label>
+              <select v-model="budgetFilter" class="input-corp bg-black/40 border-white/10 focus:border-brand-primary">
+                <option value="all">All Brackets</option>
+                <option value="cheap">Standard (< ₹500)</option>
+                <option value="mid">Mid-Tier (₹500 - ₹2000)</option>
+                <option value="premium">Elite Suite (> ₹2000)</option>
+              </select>
+            </div>
           </div>
         </div>
 

@@ -22,43 +22,43 @@
       
       <div v-else class="dashboard-grid">
         <!-- FEATURE: FOUNDER ADMIN KPIs -->
-        <section v-if="authStore.isFounder" class="kpi-grid-corp span-2 mb-8 animate-corp border border-brand-primary/20 rounded-xl bg-brand-primary/5 p-4">
-          <h2 class="label-muted mb-4 text-brand-primary w-full col-span-4">Platform Overview (Founder Rights)</h2>
-          <div class="card-premium kpi-card-corp bg-black/40">
+        <section v-if="authStore.isFounder" class="kpi-grid-corp span-2 mb-8 animate-corp border border-brand-primary/20 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-transparent p-6 shadow-[0_0_30px_rgba(0,240,255,0.05)]">
+          <h2 class="label-muted mb-6 text-brand-primary w-full col-span-4 tracking-widest">Platform Overview (Founder Rights)</h2>
+          <div class="card-premium kpi-card-corp bg-black/60 shadow-inner border-white/5">
             <span class="label-muted mb-4 opacity-70">Platform Users</span>
-            <span class="kpi-val-corp text-white">{{ adminOverview.total_users }}</span>
+            <span class="kpi-val-corp text-white text-4xl">{{ adminOverview.total_users }}</span>
           </div>
-          <div class="card-premium kpi-card-corp bg-black/40">
+          <div class="card-premium kpi-card-corp bg-black/60 shadow-inner border-white/5">
             <span class="label-muted mb-4 opacity-70">Platform Events</span>
-            <span class="kpi-val-corp text-white">{{ adminOverview.total_events }}</span>
+            <span class="kpi-val-corp text-white text-4xl">{{ adminOverview.total_events }}</span>
           </div>
-          <div class="card-premium kpi-card-corp bg-black/40">
+          <div class="card-premium kpi-card-corp bg-black/60 shadow-inner border-white/5">
             <span class="label-muted mb-4 opacity-70">Platform Regs</span>
-            <span class="kpi-val-corp text-white">{{ adminOverview.total_registrations }}</span>
+            <span class="kpi-val-corp text-white text-4xl">{{ adminOverview.total_registrations }}</span>
           </div>
-          <div class="card-premium kpi-card-corp bg-black/40">
+          <div class="card-premium kpi-card-corp bg-black/60 shadow-inner border-white/5">
             <span class="label-muted mb-4 opacity-70">Top Sport</span>
-            <span class="kpi-val-corp text-white text-xl">{{ adminOverview.most_popular_sport || 'N/A' }}</span>
+            <span class="kpi-val-corp text-brand-primary text-2xl font-800">{{ adminOverview.most_popular_sport || 'N/A' }}</span>
           </div>
         </section>
 
         <!-- Feature 11: Ticket Sales Summary KPI -->
         <section class="kpi-grid-corp span-2 mb-12 animate-corp delay-50">
-          <div class="card-premium kpi-card-corp">
+          <div class="card-premium kpi-card-corp hover:border-brand-primary/50 transition-all">
             <span class="label-muted mb-4">Total Capacity Units</span>
-            <span class="kpi-val-corp text-gradient">{{ totalCapacity }}</span>
+            <span class="kpi-val-corp text-gradient text-5xl">{{ totalCapacity }}</span>
           </div>
-          <div class="card-premium kpi-card-corp">
+          <div class="card-premium kpi-card-corp hover:border-brand-primary/50 transition-all">
             <span class="label-muted mb-4">Commitments Secured</span>
-            <span class="kpi-val-corp text-gradient">{{ totalRegistrations }}</span>
+            <span class="kpi-val-corp text-gradient text-5xl">{{ totalRegistrations }}</span>
           </div>
-          <div class="card-premium kpi-card-corp">
+          <div class="card-premium kpi-card-corp hover:border-brand-primary/50 transition-all">
             <span class="label-muted mb-4">Aggregate Fill Rate</span>
-            <span class="kpi-val-corp text-gradient">{{ aggregateFillRate }}%</span>
+            <span class="kpi-val-corp text-gradient text-5xl">{{ aggregateFillRate }}%</span>
           </div>
-          <div class="card-premium kpi-card-corp">
+          <div class="card-premium kpi-card-corp hover:border-brand-primary/50 transition-all">
             <span class="label-muted mb-4">Grand Yield</span>
-            <span class="kpi-val-corp text-gradient">₹{{ totalRevenue.toLocaleString() }}</span>
+            <span class="kpi-val-corp text-gradient text-4xl">₹{{ totalRevenue.toLocaleString() }}</span>
           </div>
         </section>
 

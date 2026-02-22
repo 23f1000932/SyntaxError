@@ -126,6 +126,8 @@ const getPriceTier = (tier: string) => {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   color: white;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .event-meta-corp {
@@ -148,6 +150,8 @@ const getPriceTier = (tier: string) => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .price-box-corp {
@@ -158,30 +162,37 @@ const getPriceTier = (tier: string) => {
 .label-corp {
   font-size: 0.7rem;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--brand-primary);
   font-weight: 800;
   letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
 }
 
 .value-corp {
-  font-size: 1.4rem;
-  font-weight: 800;
+  font-size: 1.6rem;
+  font-weight: 900;
   color: white;
+  letter-spacing: -0.03em;
 }
 
 .btn-corp-link {
   color: var(--brand-primary);
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 800;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
-  transition: all 0.2s;
+  transition: all 0.3s;
+  background: rgba(0, 240, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
 }
 
 .btn-corp-link:hover {
-  color: var(--brand-secondary);
+  background: var(--brand-primary);
+  color: black;
   gap: 0.75rem;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
 }
 </style>

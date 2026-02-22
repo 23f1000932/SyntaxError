@@ -336,14 +336,24 @@ onMounted(() => {
   border-top: 1px solid var(--border-subtle);
 }
 
+.registration-panel-corp {
+  background: rgba(10, 10, 15, 0.4);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  margin-top: 2rem;
+}
+
 .status-panel-corp {
-  background: rgba(0, 112, 243, 0.05);
-  border: 1px solid rgba(0, 112, 243, 0.2);
-  padding: 2rem 3rem;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  padding: 2.5rem;
   border-radius: var(--radius-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
 }
 
 .status-text {

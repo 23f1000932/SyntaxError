@@ -29,21 +29,25 @@
       <div v-else class="dashboard-content">
         <!-- Feature 13: Top-level Platform Stats -->
         <section class="kpi-grid mb-12 animate-corp delay-100">
-          <div class="card-premium kpi-card-corp">
-            <span class="label-muted mb-4">Total Operatives</span>
-            <span class="kpi-val-corp text-gradient">{{ overview.total_users }}</span>
+          <div class="card-premium kpi-card-corp hover:border-brand-accent/50 transition-all shadow-luxury relative overflow-hidden group">
+             <div class="absolute inset-0 bg-gradient-to-br from-brand-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <span class="label-muted mb-4 relative z-10 w-full col-span-4 tracking-widest text-[#7000ff]">Total Operatives</span>
+            <span class="kpi-val-corp text-white relative z-10 text-5xl">{{ overview.total_users }}</span>
           </div>
-          <div class="card-premium kpi-card-corp">
-            <span class="label-muted mb-4">Active Deployments</span>
-            <span class="kpi-val-corp text-gradient">{{ overview.total_events }}</span>
+          <div class="card-premium kpi-card-corp hover:border-brand-primary/50 transition-all shadow-luxury relative overflow-hidden group">
+             <div class="absolute inset-0 bg-gradient-to-br from-brand-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <span class="label-muted mb-4 relative z-10 w-full col-span-4 tracking-widest text-[#00f0ff]">Active Deployments</span>
+            <span class="kpi-val-corp text-white relative z-10 text-5xl">{{ overview.total_events }}</span>
           </div>
-          <div class="card-premium kpi-card-corp">
-            <span class="label-muted mb-4">Total Commitments</span>
-            <span class="kpi-val-corp text-gradient">{{ overview.total_registrations }}</span>
+          <div class="card-premium kpi-card-corp hover:border-brand-secondary/50 transition-all shadow-luxury relative overflow-hidden group">
+             <div class="absolute inset-0 bg-gradient-to-br from-brand-secondary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <span class="label-muted mb-4 relative z-10 w-full col-span-4 tracking-widest text-[#ff0055]">Total Commitments</span>
+            <span class="kpi-val-corp text-white relative z-10 text-5xl">{{ overview.total_registrations }}</span>
           </div>
-          <div class="card-premium kpi-card-corp">
-            <span class="label-muted mb-4">Aggregate Yield</span>
-            <span class="kpi-val-corp text-gradient">₹{{ overview.total_revenue?.toLocaleString() }}</span>
+          <div class="card-premium kpi-card-corp hover:border-white/50 transition-all shadow-luxury relative overflow-hidden group">
+             <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <span class="label-muted mb-4 relative z-10 w-full col-span-4 tracking-widest">Aggregate Yield</span>
+            <span class="kpi-val-corp text-white relative z-10 text-4xl mt-2 tracking-tight">₹{{ overview.total_revenue?.toLocaleString() }}</span>
           </div>
         </section>
 

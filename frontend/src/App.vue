@@ -103,6 +103,14 @@ const handleLogout = () => {
 
 .navbar-premium {
   border-bottom: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.navbar-premium.scrolled {
+  background: rgba(0, 0, 0, 0.85);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
 }
 
 @media (max-width: 768px) {

@@ -134,16 +134,23 @@ const sendMessage = async () => {
   align-items: center;
   gap: 1rem;
   background: var(--brand-primary);
-  color: white;
+  color: #000;
   border: none;
   padding: 1.25rem 2rem;
   border-radius: var(--radius-pill);
   font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 10px 40px rgba(0, 112, 243, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 240, 255, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  transition: all 0.3s var(--ease-luxury);
+}
+
+.chat-toggle-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 50px rgba(0, 240, 255, 0.6);
+  background: white;
 }
 
 .chat-window {
